@@ -1,9 +1,5 @@
-# dave's video automation system
+# dave's creative toolkit
 
-This program helps automate rendering and importing media between different
-software, eliminating the need for the user to manually handle intermediate
-files. It also provides a basic NLE-style editor for sequencing media together,
-making it a sort of "video editor that combines other video editors."
+these are all the tools i use for building videos and music. there are two parts of this repository: custom software which all runs as one mega-program, and also plugins for other software. it's all placed in this one repository to keep it all central.
 
-It is currently in a functional but highly experimental phase, and does not
-support many features I want, including a GUI.
+it is being activly developed and is not intended for others to use
