@@ -27,10 +27,14 @@ export function SequenceEditor({ id: sqId }: SequenceEditorProps) {
         };
         dispatchAction('SQ_AddFusionClip', { sqId, clip});
       }}>add fusion clip</button>
-      <button>
+      <button onClick={() => {
+        dispatchAction('SQ_Render', { sqId });
+      }}>
         render final video
       </button>
-      <button>
+      <button onClick={() => {
+        dispatchAction('SQ_SyncAll', { sqId });
+      }}>
         run audio sync on all
       </button>
       <div>
@@ -44,7 +48,10 @@ export function SequenceEditor({ id: sqId }: SequenceEditorProps) {
               dispatchAction('SQ_RemoveFusionClip', { sqId, clipId: clip.source });
             }}>delete this</button>
             <button onClick={() => {
-              dispatchAction('SQ_RunAudioSync', { sqId, clipId: clip.source });
+              dispatchAction('SQ_RenderSingleClip', { sqId, clipId: clip.source });
+            }}>render</button>
+            <button onClick={() => {
+              dispatchAction('SQ_SyncSingleClip', { sqId, clipId: clip.source });
             }}>run audio sync magic</button>
             <button onClick={async() => {
               const newValue = await $$numberDialog(`${id} offset=${clip.offset}`);
