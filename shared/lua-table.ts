@@ -48,7 +48,9 @@ function astToJSON(t: AST.Node): any {
   }
 }
 function jsonToAST(x: any): AST.Expression {
-  if (typeof x === 'string') {
+  if (x instanceof LuaTable) {
+    return (x as any).root;
+  } else if (typeof x === 'string') {
     return {
       type: 'StringLiteral',
       value: x,
@@ -66,7 +68,7 @@ function jsonToAST(x: any): AST.Expression {
       value: x,
       raw: x.toString(),
     };
-  } else if (x === null) {
+  } else if (x === null || x === undefined) {
     return {
       type: 'NilLiteral',
       value: null,
@@ -193,13 +195,18 @@ export class LuaTable {
     }
   }
 
+  toArray(): any[] {
+    return this.table.fields.filter(x => x.type === 'TableValue').map(x => astToJSON(x.value));
+  }
+
   toString(): string {
-	return astToString(this.root);
+	  return astToString(this.root);
   }
 
   [util.inspect.custom](depth: number, options: any) {
     const name = (this.root as any)?.base?.name || '';
-    const type = options.stylize(`[${this.constructor.name}${name ? ' ' + name : ''}]`, 'special')
+    const constructor = this.constructor.name === LuaTable.name ? 'LuaTable' : this.constructor.name;
+    const type = options.stylize(`[${constructor}${name ? ' ' + name : ''}]`, 'special')
     
     if (depth < 0) {
       return type;

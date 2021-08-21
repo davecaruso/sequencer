@@ -1,5 +1,4 @@
 import React from 'react';
-import { helloWorldTestAction } from '../actions/sequence';
 import { SequenceEditor } from './SequenceEditor';
 import { dispatchAction, useAppState } from './state';
 
@@ -12,6 +11,8 @@ export function App() {
     <p>
       resource viewer is main and main only
     </p>
+    <button onClick={() => dispatchAction('Project_Save')}>save self</button>
+    <button onClick={() => dispatchAction('Project_Load')}>load data</button>
     <SequenceEditor id={'main'} />
   </div>
 }

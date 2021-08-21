@@ -4,14 +4,14 @@ import { LuaTable } from "./lua-table";
 export class FComposition extends LuaTable {
     get CurrentTime(): number { return this.get('CurrentTime'); }
     set CurrentTime(value: number) { this.set('CurrentTime', value); }
-    get RenderRange(): [number, number] { return this.get('RenderRange'); }
+    get RenderRange(): [number, number] { return this.get('RenderRange').toArray();; }
     set RenderRange(value: [number, number]) { this.set('RenderRange', value); }
     get RenderRangeStart(): number { return this.RenderRange[0] }
     set RenderRangeStart(value: number) { this.RenderRange = [value, this.RenderRange[1]]; }
     get RenderRangeEnd(): number { return this.RenderRange[1] }
     set RenderRangeEnd(value: number) { this.RenderRange = [this.RenderRange[0], value]; }
     get RenderRangeLength(): number { return this.RenderRange[1] - this.RenderRange[0]; }
-    get GlobalRange(): [number, number] { return this.get('GlobalRange'); }
+    get GlobalRange(): [number, number] { return this.get('GlobalRange').toArray(); }
     set GlobalRange(value: [number, number]) { this.set('GlobalRange', value); }
     get GlobalRangeStart(): number { return this.GlobalRange[0] }
     set GlobalRangeStart(value: number) { this.GlobalRange = [value, this.GlobalRange[1]]; }

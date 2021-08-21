@@ -32,6 +32,6 @@ export function useAppState() {
   return appstate;
 }
 
-export async function dispatchAction<F extends (...a: any[]) => any>(action: F, ...args: any[]): Promise<ReturnType<F>> {
-  return await CTK.dispatchAction(action.name, args);
+export async function dispatchAction(action: string, ...args: any[]): Promise<any> {
+  return await CTK.dispatchAction(action, args);
 }
