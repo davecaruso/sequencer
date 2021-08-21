@@ -1,6 +1,11 @@
 {
   "number": 1,
   "resources": {
-    
+    "main": {
+      "type": "sequence",
+      "name": "main",
+      "fusion": {},
+      "audioClips": {}
+    }
   }
 }

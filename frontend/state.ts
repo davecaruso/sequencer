@@ -1,11 +1,12 @@
 import EventEmitter from 'eventemitter3';
 import { useEffect, useState } from 'react';
+import { AppState } from '../shared/types';
 
 const events = new EventEmitter();
 
 const winId = location.hash.slice(1);
 
-let appstate!: any;
+let appstate!: AppState;
 
 function handleUpdate(newState: any) {
   appstate = newState;
@@ -15,7 +16,7 @@ function handleUpdate(newState: any) {
 CTK.setUpdateHandler(handleUpdate);
 CTK.requestUpdate();
 
-export function getAppState() {
+export function getAppState()  {
   return appstate;
 }
 

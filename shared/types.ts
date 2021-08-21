@@ -1,5 +1,3 @@
-import { BrowserWindow } from "electron";
-
 export interface AppState {
   project: Project;
   fileTree: Record<string, FileTreeItem>;
@@ -29,9 +27,9 @@ export interface Sequence {
 
 export interface SequenceFusionClip {
   source: string;
+  offset: number;
   trim_in: number;
   trim_out: number;
-  duration: number;
 }
 
 export interface SequenceAudioClip {

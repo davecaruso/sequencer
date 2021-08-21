@@ -36,7 +36,9 @@ async function openWindow() {
   const def: WindowDef = {
     win: new BrowserWindow({
       webPreferences: {
-        preload: 'C:/Code/creative-toolkit/backend/preload.js'
+        preload: 'C:/Code/creative-toolkit/backend/preload.js',
+        // PLEASE TURN THIS OFF ASAP, NEEDED FOR $$dialog functions
+        nodeIntegration: true
       },
       // transparent: true,
       // frame: false
@@ -62,6 +64,5 @@ async function loadProject(path: string) {
 
 app.on('ready', async() => {
   await loadProject(`C:/Code/creative-toolkit/sample/project.ctk`);
-  await openWindow();
   await openWindow();
 });
