@@ -1,9 +1,10 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { readJSON } from 'fs-extra';
 import { AppState } from '../shared/types';
-import { produce } from 'immer'
+import { createDraft, finishDraft } from 'immer'
 import { v4 } from 'uuid';
 import * as actions from '../actions/_actions';
+import './paths';
 
 ipcMain.on('request-update', async(ev) => {
   ev.sender.send('update', appstate);
@@ -24,9 +25,9 @@ let appstate: AppState;
 async function dispatchAction(action: string, data: any) {
   const cb = (actions as any)[action];
   let r;
-  appstate = produce(appstate, (draft) => {
-    r = cb(draft, ...data);
-  });
+  const draft = createDraft(appstate);
+  r = await cb(draft, ...data);
+  appstate = finishDraft(draft);
   sendUpdate();
   return r;
 }
@@ -37,8 +38,6 @@ async function openWindow() {
     win: new BrowserWindow({
       webPreferences: {
         preload: 'C:/Code/creative-toolkit/backend/preload.js',
-        // PLEASE TURN THIS OFF ASAP, NEEDED FOR $$dialog functions
-        nodeIntegration: true
       },
       // transparent: true,
       // frame: false

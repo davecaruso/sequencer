@@ -1,7 +1,6 @@
 {
-  "number": 1,
   "resources": {
-    "main": {
+    "ff52c06f-5bcf-49ca-86d5-cbb29d76c7da": {
       "type": "sequence",
       "name": "main",
       "fusion": {},

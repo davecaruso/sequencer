@@ -10,7 +10,7 @@ export async function $$stringDialog(id: string): Promise<string> {
   label.style = 'position: absolute; top: 10px; left: 10px;';
   const input = document.createElement('input');
   input.id = id;
-  input.style = 'position: absolute; top: 50px; left: 10px; width: 380px; height: 30px;';
+  input.style = 'position: absolute; top: 50px; left: 10px; width: 500px; height: 30px;';
   input.autofocus = true;
   dialog.appendChild(label);
   dialog.appendChild(input);

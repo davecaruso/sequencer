@@ -23,19 +23,20 @@ export interface Sequence {
   name: string;
   fusion: Record<string, SequenceFusionClip>;
   audioClips: Record<string, SequenceAudioClip>;
+  audioDirty: boolean;
 }
 
 export interface SequenceFusionClip {
   source: string;
   offset: number;
-  trim_in: number;
-  trim_out: number;
+  duration: number;
+  dirty?: boolean;
 }
 
 export interface SequenceAudioClip {
   source: string;
   track: number;
+  offset: number;
   trim_in: number;
   trim_out: number;
-  duration: number;
 }

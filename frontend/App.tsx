@@ -13,6 +13,6 @@ export function App() {
     </p>
     <button onClick={() => dispatchAction('Project_Save')}>save self</button>
     <button onClick={() => dispatchAction('Project_Load')}>load data</button>
-    <SequenceEditor id={'main'} />
+    <SequenceEditor id={'ff52c06f-5bcf-49ca-86d5-cbb29d76c7da'} />
   </div>
 }
