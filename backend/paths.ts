@@ -24,15 +24,26 @@ export const FFMPEG_PATH = searchForExecutable([
     'C:\\Program Files\\Shotcut',   
 ], 'ffmpeg.exe', 'FFmpeg');
 
-export const FUSION_PATH = searchForExecutable([
-  'C:\\Program Files\\Blackmagic Design\\Fusion 17',
-  'C:\\Program Files\\Blackmagic Design\\Fusion 9'
-], 'Fusion.exe', 'Blackmagic Fusion');
+function searchForFusion() {
+  try {
+    return searchForExecutable([
+      'C:\\Program Files\\Blackmagic Design\\Fusion Render Node 17',
+      'C:\\Program Files\\Blackmagic Design\\Fusion Render Node 9',
+    ], 'FusionRenderNode.exe', '');
+  } catch {
+    return searchForExecutable([
+      'C:\\Program Files\\Blackmagic Design\\Fusion 17',
+      'C:\\Program Files\\Blackmagic Design\\Fusion 9'
+    ], 'Fusion.exe', 'Blackmagic Fusion or Blackmagic Fusion Render Node');
+  }
+}
+
+export const FUSION_PATH = searchForFusion();
+
+export const MELT_PATH = searchForExecutable([
+  'C:\\Program Files\\MLT\\bin',
+  'C:\\Program Files\\MLT',
+  'C:\\Program Files\\Shotcut',
+], 'melt.exe', 'Melt');
 
 export const CACHE_PATH = args.cache ? path.resolve(args.cache) : (process.env.TEMP + '\\CreativeToolkit');
-
-console.log({
-  FFMPEG_PATH,
-  FUSION_PATH,
-  CACHE_PATH,
-});

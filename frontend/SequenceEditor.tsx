@@ -45,8 +45,9 @@ export function SequenceEditor({ id: sqId }: SequenceEditorProps) {
         };
         dispatchAction('SQ_AddAudioClip', { sqId, clip});
       }}>add audio clip</button>
-      <button onClick={() => {
-        dispatchAction('SQ_Render', { sqId });
+      <button onClick={async() => {
+        const dest = await $$stringDialog('where save');
+        dispatchAction('SQ_Render', { sqId, exportLocation: dest });
       }}>
         render final video
       </button>

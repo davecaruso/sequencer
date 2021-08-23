@@ -23,13 +23,16 @@ let windows = new Map<string, WindowDef>();
 let appstate: AppState;
 
 async function dispatchAction(action: string, data: any) {
+  const start = Date.now();
+  console.log(`!!! Dispatching ${action}`);
   const cb = (actions as any)[action];
   let r;
   const draft = createDraft(appstate);
   r = await cb(draft, ...data);
   appstate = finishDraft(draft);
+  console.log(`!!! Action ${action} took ${Date.now() - start}ms`);
   sendUpdate();
-  return r;
+  return r; 
 }
 
 async function openWindow() {

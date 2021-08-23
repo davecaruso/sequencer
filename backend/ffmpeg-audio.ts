@@ -32,9 +32,8 @@ export async function combineAudio(clips: SequenceAudioClip[], outputFile: strin
   }
   const args = getCommandArgs(clips, outputFile);
   return new Promise<void>((resolve, reject) => {
-    const child = spawn(FFMPEG_PATH, args, {
-      stdio: "pipe"
-    });
+    const child = spawn(FFMPEG_PATH, args);
+    console.log(`Running ffmpeg with args: ${args.join(" ")}`);
     child.on("error", reject);
     child.on("close", code => {
       if (code === 0) {
