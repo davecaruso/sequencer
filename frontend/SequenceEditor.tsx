@@ -19,6 +19,8 @@ export function SequenceEditor({ id: sqId }: SequenceEditorProps) {
   return (
     <div>
       <h1>{sqId} "{name}"</h1>
+      {JSON.stringify(sq)}
+      <br />
       <button onClick={async() => {
         const source = await $$stringDialog('.source');
         const offset = await $$numberDialog('.offset');

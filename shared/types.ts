@@ -1,7 +1,10 @@
 export interface AppState {
+  projectFilepath: string;
   project: Project;
   fileTree: Record<string, FileTreeItem>;
   layout: any;
+  loading: boolean;
+  pathdata: any;
 }
 
 export interface Project {
@@ -31,6 +34,7 @@ export interface SequenceFusionClip {
   offset: number;
   duration: number;
   dirty?: boolean;
+  renderModifiedTime?: number;
 }
 
 export interface SequenceAudioClip {

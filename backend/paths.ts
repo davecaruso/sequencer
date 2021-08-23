@@ -1,6 +1,9 @@
+import { app, dialog } from 'electron';
 import fs from 'fs-extra';
 import path from 'path';
 import args from './args';
+
+let missingSoftware: string[] = [];
 
 if (process.platform !== 'win32') {
   throw new Error('This script is only for windows');
@@ -15,7 +18,10 @@ function searchForExecutable(paths: string[], executable: string, name: string):
       return fullPath;
     }
   }
-  throw new Error(`Could not find ${name} installed on the system. Add ${executable} to %PATH% or install the software in it's default file path`); 
+
+  missingSoftware.push(`Could not find ${name} installed on the system. Add ${executable} to %PATH% or install the software in it's default file path`);
+  
+  return '';
 }
 
 export const FFMPEG_PATH = searchForExecutable([
@@ -47,3 +53,14 @@ export const MELT_PATH = searchForExecutable([
 ], 'melt.exe', 'Melt');
 
 export const CACHE_PATH = args.cache ? path.resolve(args.cache) : (process.env.TEMP + '\\CreativeToolkit');
+
+app.on('ready', () => {
+  for (const m of missingSoftware) {
+    dialog.showMessageBoxSync({
+      type: 'error',
+      buttons: ['OK'],
+      message: m,
+      title: 'Missing Software'
+    });
+  }
+});

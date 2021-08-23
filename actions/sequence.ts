@@ -68,8 +68,6 @@ interface ISQ_Render {
   exportLocation: string;
 }
 
-const root = 'C:\\Code\\creative-toolkit\\sample'
-
 export async function SQ_AddFusionClip(state: AppState, { sqId, clip }: ISQ_AddFusionClip) {
   const id = v4();
 
@@ -130,7 +128,7 @@ export async function SQ_AddFusionClip(state: AppState, { sqId, clip }: ISQ_AddF
   comp.Tools.set('CTK_Output', saver);
   
   await writeFile(
-    path.join(root, clip.source),
+    path.join(path.dirname(state.projectFilepath), clip.source),
     comp.toString(),
   );
 }
@@ -147,7 +145,7 @@ export async function SQ_RemoveFusionClip(state: AppState, { sqId, clipId }: ISQ
 
   delete state.project.resources[sqId].fusion[clipId];
 
-  await remove(path.join(root, file));
+  await remove(path.join(path.dirname(state.projectFilepath), file));
 }
 
 export async function SQ_RemoveAudioClip(state: AppState, { sqId, clipId }: ISQ_RemoveAudioClip) {
@@ -171,16 +169,17 @@ export async function SQ_SetAudioClipProp(state: AppState, { sqId, clipId, prop,
 
 export async function SQ_UpdateComposition(state: AppState, { sqId, clipId }: ISQ_UpdateComposition) {
   const clip = state.project.resources[sqId].fusion[clipId];
+  const compPath = path.join(path.dirname(state.projectFilepath), clip.source);
   if (!clip.dirty) return;
 
-  const compText = (await readFile(path.join(root, clip.source))).toString();
+  const compText = (await readFile(compPath)).toString();
   const comp = new FComposition(compText);
   comp.RenderRangeStart = clip.offset;
   comp.RenderRangeEnd = clip.offset + clip.duration;
   comp.GlobalRange = comp.RenderRange;
   comp.CurrentTime = comp.RenderRangeStart;
   comp.AudioFilename = CACHE_PATH + '\\' + sqId + '.wav';
-  await writeFile(path.join(root, clip.source), comp.toString());
+  await writeFile(compPath, comp.toString());
 
   clip.dirty = false;
 }
@@ -212,21 +211,16 @@ export async function SQ_RenderSingleClip(state: AppState, { sqId, clipId }: ISQ
   const sq = state.project.resources[sqId];
   const clip = sq.fusion[clipId];
 
-  await renderFusionFile(path.resolve(root, clip.source));
+  await renderFusionFile(path.resolve(path.dirname(state.projectFilepath), clip.source));
 }
 
 export async function SQ_Render(state: AppState, { sqId, exportLocation }: ISQ_Render) {
-  console.log('RenderingSQ.1', sqId);
   await Project_Save(state);
-  console.log('RenderingSQ.2', sqId);
   await SQ_RenderAudio(state, { sqId });
-  console.log('RenderingSQ.3', sqId);
   await Promise.all(Object.keys(state.project.resources[sqId].fusion).map(async(clipId) => SQ_RenderSingleClip(state, { sqId, clipId })));
-  console.log('RenderingSQ.4', sqId);
-  await renderSequence(sqId, state.project.resources[sqId], path.resolve(root, exportLocation));
-  console.log('RenderingSQ DONE');
+  await renderSequence(sqId, state.project.resources[sqId], path.resolve(path.dirname(state.projectFilepath), exportLocation));
 }
 
 export async function General_Open(state: AppState, file: string) {
-  shell.openPath(path.resolve(root, file));
+  shell.openPath(path.resolve(path.dirname(state.projectFilepath), file));
 }
