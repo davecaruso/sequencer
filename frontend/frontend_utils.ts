@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** @deprecated remove this ASAP */
 export async function $$stringDialog(id: string): Promise<string> {
   const root = document.createElement('div');

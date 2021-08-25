@@ -60,6 +60,7 @@ async function openWindow() {
     resources: [],
   };
   def.win.loadURL('http://localhost:3000/frontend/index.html#' + id);
+  // def.win.loadURL(__dirname + '/index.html#' + id);
   windows.set(id, def);
 }
 

@@ -1,6 +1,6 @@
 import path from 'path';
 import { shell } from 'electron';
-import { writeFile, remove, readFile, pathExists } from 'fs-extra';
+import { writeFile, remove, readFile, pathExists, stat } from 'fs-extra';
 import { FComposition } from '../shared/fcomposition';
 import { AppState, SequenceAudioClip, SequenceFusionClip } from '../shared/types';
 import { v4 } from 'uuid';
@@ -211,7 +211,15 @@ export async function SQ_RenderSingleClip(state: AppState, { sqId, clipId }: ISQ
   const sq = state.project.resources[sqId];
   const clip = sq.fusion[clipId];
 
-  await renderFusionFile(path.resolve(path.dirname(state.projectFilepath), clip.source));
+  const fusionFile = path.resolve(path.dirname(state.projectFilepath), clip.source);
+
+  const file = await stat(fusionFile);
+
+  if (file.mtime.getTime() >= (clip.renderModifiedTime || Infinity)) return;
+
+  clip.renderModifiedTime = file.mtime.getTime();
+
+  await renderFusionFile(fusionFile);
 }
 
 export async function SQ_Render(state: AppState, { sqId, exportLocation }: ISQ_Render) {
