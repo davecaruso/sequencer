@@ -232,3 +232,11 @@ export async function SQ_Render(state: AppState, { sqId, exportLocation }: ISQ_R
 export async function General_Open(state: AppState, file: string) {
   shell.openPath(path.resolve(path.dirname(state.projectFilepath), file));
 }
+
+export async function System_OpenCache(state: AppState) {
+  shell.openPath(CACHE_PATH);
+}
+
+export async function System_OpenProjectFolder(state: AppState) {
+  shell.openPath(path.dirname(state.projectFilepath));
+}
