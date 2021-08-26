@@ -126,24 +126,24 @@ export class FComposition extends LuaTable {
 
   static create() {
     return new FComposition(`Composition {
-          CurrentTime = 0,
-          RenderRange = { 0, 1000 },
-          GlobalRange = { 0, 1000 },
-          CurrentID = 1,
-          HiQ = true,
-          PlaybackUpdateMode = 0,
-          Version = "Node.JS",
-          SavedOutputs = 0,
-          HeldTools = 0,
-          DisabledTools = 0,
-          LockedTools = 0,
-          AudioOffset = 0,
-          AutoRenderRange = true,
-          Resumable = true,
-          OutputClips = {},
-          Tools = {},
-          Frames = {},
-          Prefs = {}
-      }`);
+      CurrentTime = 0,
+      RenderRange = { 0, 1000 },
+      GlobalRange = { 0, 1000 },
+      CurrentID = 1,
+      HiQ = true,
+      PlaybackUpdateMode = 0,
+      Version = "Node.JS",
+      SavedOutputs = 0,
+      HeldTools = 0,
+      DisabledTools = 0,
+      LockedTools = 0,
+      AudioOffset = 0,
+      AutoRenderRange = true,
+      Resumable = true,
+      OutputClips = {},
+      Tools = {},
+      Frames = {},
+      Prefs = {}
+    }`);
   }
 }
