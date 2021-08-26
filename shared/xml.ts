@@ -3,11 +3,12 @@ type XMLChildren = XMLChild | XMLChild[];
 type XMLAttrs = Record<string, string | number | boolean>;
 
 function escapeXML(str: string) {
-  return str.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 class XML {
@@ -15,8 +16,9 @@ class XML {
   children: XMLChild[];
   up?: XML;
 
-  get root() {
-    let ref: XML = this;
+  get root(): XML {
+    if (!this.up) return this;
+    let ref: XML = this.up;
     while (ref.up) {
       ref = ref.up;
     }
@@ -46,15 +48,19 @@ class XML {
   }
 
   stringify(depth = 0): string {
-    const children = this.children.map(x => x instanceof XML ? x.stringify(depth + 1) : escapeXML(x.toString()));
-    const attrs = Object.entries(this.attrs).map(
-      ([key, value]) => ` ${escapeXML(key)}="${escapeXML(value.toString())}"`
-    ).join('');
+    const children = this.children.map((x) =>
+      x instanceof XML ? x.stringify(depth + 1) : escapeXML(x.toString())
+    );
+    const attrs = Object.entries(this.attrs)
+      .map(([key, value]) => ` ${escapeXML(key)}="${escapeXML(value.toString())}"`)
+      .join('');
     const space = '  '.repeat(depth);
     if (this.children.length > 0) {
-      return `${space}<${escapeXML(this.tagName)}${attrs}>\n${children.join('\n')}\n${space}</${escapeXML(this.tagName)}>`
+      return `${space}<${escapeXML(this.tagName)}${attrs}>\n${children.join(
+        '\n'
+      )}\n${space}</${escapeXML(this.tagName)}>`;
     } else {
-      return `${space}<${escapeXML(this.tagName)}${attrs} />`
+      return `${space}<${escapeXML(this.tagName)}${attrs} />`;
     }
   }
 }

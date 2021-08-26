@@ -16,7 +16,7 @@ function handleUpdate(newState: any) {
 CTK.setUpdateHandler(handleUpdate);
 CTK.requestUpdate();
 
-export function getAppState()  {
+export function getAppState() {
   return appstate;
 }
 
@@ -24,7 +24,7 @@ export function useAppState() {
   const update = useState(false)[1];
   useEffect(() => {
     function f() {
-      update(x => !x);
+      update((x) => !x);
     }
     events.on('change', f);
     return () => void events.off('change', f);

@@ -111,7 +111,9 @@ export async function SQ_AddFusionClip(state: AppState, { sqId, clip }: ISQ_AddF
     },
     ViewInfo = OperatorInfo { Pos = { 750, 50 } },
   }`);
-  saver.Inputs.get('Clip').get('Value').set('Filename', path.join(CACHE_PATH, `${id}.mp4`));
+  saver.Inputs.get('Clip')
+    .get('Value')
+    .set('Filename', path.join(CACHE_PATH, `${id}.mp4`));
 
   const background = new FTool(`Background {
     Inputs = {
@@ -126,11 +128,8 @@ export async function SQ_AddFusionClip(state: AppState, { sqId, clip }: ISQ_AddF
 
   comp.Tools.set('Background1', background);
   comp.Tools.set('CTK_Output', saver);
-  
-  await writeFile(
-    path.join(path.dirname(state.projectFilepath), clip.source),
-    comp.toString(),
-  );
+
+  await writeFile(path.join(path.dirname(state.projectFilepath), clip.source), comp.toString());
 }
 
 export async function SQ_AddAudioClip(state: AppState, { sqId, clip }: ISQ_AddAudioClip) {
@@ -141,7 +140,7 @@ export async function SQ_AddAudioClip(state: AppState, { sqId, clip }: ISQ_AddAu
 }
 
 export async function SQ_RemoveFusionClip(state: AppState, { sqId, clipId }: ISQ_RemoveFusionClip) {
-  const file =  state.project.resources[sqId].fusion[clipId].source;
+  const file = state.project.resources[sqId].fusion[clipId].source;
 
   delete state.project.resources[sqId].fusion[clipId];
 
@@ -153,7 +152,10 @@ export async function SQ_RemoveAudioClip(state: AppState, { sqId, clipId }: ISQ_
   state.project.resources[sqId].audioDirty = true;
 }
 
-export async function SQ_SetFusionClipProp(state: AppState, { sqId, clipId, prop, value }: ISQ_SetFusionClipProp) {
+export async function SQ_SetFusionClipProp(
+  state: AppState,
+  { sqId, clipId, prop, value }: ISQ_SetFusionClipProp
+) {
   const clip = state.project.resources[sqId].fusion[clipId];
   (clip as any)[prop] = value;
   clip.dirty = true;
@@ -161,13 +163,19 @@ export async function SQ_SetFusionClipProp(state: AppState, { sqId, clipId, prop
   await SQ_UpdateComposition(state, { sqId, clipId });
 }
 
-export async function SQ_SetAudioClipProp(state: AppState, { sqId, clipId, prop, value }: ISQ_SetAudioClipProp) {
+export async function SQ_SetAudioClipProp(
+  state: AppState,
+  { sqId, clipId, prop, value }: ISQ_SetAudioClipProp
+) {
   const clip = state.project.resources[sqId].audioClips[clipId];
   (clip as any)[prop] = value;
   state.project.resources[sqId].audioDirty = true;
 }
 
-export async function SQ_UpdateComposition(state: AppState, { sqId, clipId }: ISQ_UpdateComposition) {
+export async function SQ_UpdateComposition(
+  state: AppState,
+  { sqId, clipId }: ISQ_UpdateComposition
+) {
   const clip = state.project.resources[sqId].fusion[clipId];
   const compPath = path.join(path.dirname(state.projectFilepath), clip.source);
   if (!clip.dirty) return;
@@ -184,16 +192,21 @@ export async function SQ_UpdateComposition(state: AppState, { sqId, clipId }: IS
   clip.dirty = false;
 }
 
-export async function SQ_UpdateAllCompositions(state: AppState, { sqId }: ISQ_UpdateAllCompositions) {
+export async function SQ_UpdateAllCompositions(
+  state: AppState,
+  { sqId }: ISQ_UpdateAllCompositions
+) {
   const clips = state.project.resources[sqId].fusion;
-  await Promise.all(Object.keys(clips).map(async(clip) => SQ_UpdateComposition(state, { sqId, clipId: clip })));
+  await Promise.all(
+    Object.keys(clips).map(async (clip) => SQ_UpdateComposition(state, { sqId, clipId: clip }))
+  );
 }
 
 export async function SQ_RenderAudio(state: AppState, { sqId }: ISQ_RenderAudio) {
   const outputFile = path.join(CACHE_PATH, `${sqId}.wav`);
   const sq = state.project.resources[sqId];
 
-  if (!sq.audioDirty && await pathExists(outputFile)) return;
+  if (!sq.audioDirty && (await pathExists(outputFile))) return;
 
   const audioClips = Object.values(sq.audioClips);
 
@@ -207,7 +220,7 @@ export async function SQ_RenderAudio(state: AppState, { sqId }: ISQ_RenderAudio)
 export async function SQ_RenderSingleClip(state: AppState, { sqId, clipId }: ISQ_RenderSingleClip) {
   await Project_Save(state);
   await SQ_UpdateComposition(state, { sqId, clipId });
-  
+
   const sq = state.project.resources[sqId];
   const clip = sq.fusion[clipId];
 
@@ -225,8 +238,16 @@ export async function SQ_RenderSingleClip(state: AppState, { sqId, clipId }: ISQ
 export async function SQ_Render(state: AppState, { sqId, exportLocation }: ISQ_Render) {
   await Project_Save(state);
   await SQ_RenderAudio(state, { sqId });
-  await Promise.all(Object.keys(state.project.resources[sqId].fusion).map(async(clipId) => SQ_RenderSingleClip(state, { sqId, clipId })));
-  await renderSequence(sqId, state.project.resources[sqId], path.resolve(path.dirname(state.projectFilepath), exportLocation));
+  await Promise.all(
+    Object.keys(state.project.resources[sqId].fusion).map(async (clipId) =>
+      SQ_RenderSingleClip(state, { sqId, clipId })
+    )
+  );
+  await renderSequence(
+    sqId,
+    state.project.resources[sqId],
+    path.resolve(path.dirname(state.projectFilepath), exportLocation)
+  );
 }
 
 export async function General_Open(state: AppState, file: string) {

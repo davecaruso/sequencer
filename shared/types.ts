@@ -15,14 +15,14 @@ export interface Project {
 export interface FileTreeItem {
   name: string;
   fullPath: string;
-  type: "directory" | "file";
+  type: 'directory' | 'file';
   contents?: string[];
 }
 
 type Resource = Sequence;
 
 export interface Sequence {
-  type: "sequence";
+  type: 'sequence';
   name: string;
   fusion: Record<string, SequenceFusionClip>;
   audioClips: Record<string, SequenceAudioClip>;

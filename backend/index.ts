@@ -1,23 +1,23 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { pathExists, readJSON, writeJSON } from 'fs-extra';
 import { AppState } from '../shared/types';
-import { createDraft, finishDraft } from 'immer'
+import { createDraft, finishDraft } from 'immer';
 import { v4 } from 'uuid';
 import * as actions from '../actions/_actions';
 import './paths';
 import * as pathData from './paths';
 
-ipcMain.on('request-update', async(ev) => {
+ipcMain.on('request-update', async (ev) => {
   ev.sender.send('update', appstate);
 });
 
-ipcMain.handle('dispatch', async(ev, name, data) => {
+ipcMain.handle('dispatch', async (ev, name, data) => {
   return await dispatchAction(name, data);
 });
 
 interface WindowDef {
   win: BrowserWindow;
-  resources: string[]
+  resources: string[];
 }
 
 let windows = new Map<string, WindowDef>();
@@ -44,7 +44,7 @@ async function dispatchAction(action: string, data: any) {
   if (error) {
     throw error;
   }
-  return r; 
+  return r;
 }
 
 async function openWindow() {
@@ -65,24 +65,24 @@ async function openWindow() {
 }
 
 function sendUpdate() {
-  windows.forEach(v => v.win.webContents.send('update', appstate));
+  windows.forEach((v) => v.win.webContents.send('update', appstate));
 }
 
 async function loadProject(path: string) {
-  if (!await pathExists(path)) {
+  if (!(await pathExists(path))) {
     const p = {
-      "resources": {
-        "ff52c06f-5bcf-49ca-86d5-cbb29d76c7da": {
-          "type": "sequence",
-          "name": "main",
-          "fusion": {},
-          "audioClips": {}
-        }
-      }
+      resources: {
+        'ff52c06f-5bcf-49ca-86d5-cbb29d76c7da': {
+          type: 'sequence',
+          name: 'main',
+          fusion: {},
+          audioClips: {},
+        },
+      },
     };
     await writeJSON(path, p);
   }
-  
+
   appstate = {
     projectFilepath: path,
     project: await readJSON(path),
@@ -94,18 +94,16 @@ async function loadProject(path: string) {
   sendUpdate();
 }
 
-app.on('ready', async() => {
+app.on('ready', async () => {
   let projectFile = dialog.showOpenDialogSync({
     title: 'Open Project',
     properties: ['openFile', 'promptToCreate'],
-    filters: [
-      { name: 'Creative Toolkit', extensions: ['ctk'] },
-    ],
+    filters: [{ name: 'Creative Toolkit', extensions: ['ctk'] }],
     defaultPath: 'C:/',
     message: 'Open a Creative Toolkit project',
   });
-  
-  if(!projectFile) {
+
+  if (!projectFile) {
     app.quit();
     return;
   }

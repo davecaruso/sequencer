@@ -4,4 +4,4 @@ declare interface CreativeToolkitGlobal {
   dispatchAction(name: string, data: any): Promise<any>;
 }
 
-declare const CTK: CreativeToolkitGlobal
+declare const CTK: CreativeToolkitGlobal;
