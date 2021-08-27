@@ -10,6 +10,7 @@ let appstate!: AppState;
 
 function handleUpdate(newState: AppState) {
   appstate = newState;
+  console.log('state updated', appstate);
   events.emit('change');
 }
 

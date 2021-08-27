@@ -1,7 +1,7 @@
 import { app, dialog } from 'electron';
 import fs from 'fs-extra';
 import path from 'path';
-import args from './args';
+import { args } from './args';
 
 const missingSoftware: string[] = [];
 
@@ -19,9 +19,11 @@ function searchForExecutable(paths: string[], executable: string, name: string):
     }
   }
 
-  missingSoftware.push(
-    `Could not find ${name} installed on the system. Add ${executable} to %PATH% or install the software in it's default file path`
-  );
+  if (name) {
+    missingSoftware.push(
+      `Could not find ${name} installed on the system. Add ${executable} to %PATH% or install the software in it's default file path`
+    );
+  }
 
   return '';
 }

@@ -1,9 +1,19 @@
 import { spawn } from 'child_process';
 import { writeFile } from 'fs-extra';
 import path from 'path';
-import { Sequence } from '../shared/types';
+import { Sequence, SequenceClip } from '../shared/types';
 import { xml } from '../shared/xml';
 import { CACHE_PATH, MELT_PATH } from './paths';
+
+function getFileExtension(clip: SequenceClip) {
+  if (clip.trackType === 'audio') {
+    return 'wav';
+  }
+  if (clip.trackType === 'video') {
+    return 'mp4';
+  }
+  return '';
+}
 
 export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
   const root = xml('mlt');
@@ -25,57 +35,50 @@ export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
     acodec: 'aac',
   });
 
-  const clips = new Map();
-  const playlist = xml('playlist');
-  const sortedClips = Object.entries(sq.fusion).sort((a, b) => a[1].offset - b[1].offset);
-  let x = 0;
-  for (const [id, clip] of sortedClips) {
-    clips.set(id, clip);
-    if (clip.offset > x) {
-      playlist.elem('blank', {
-        length: (clip.offset - x).toString(),
-      });
-    }
-    x = clip.offset + clip.duration;
-    playlist.elem('entry', {
-      producer: id,
-      in: 0,
-      out: clip.duration,
-    });
+  const tracks: SequenceClip[][] = [];
+
+  for (const clip of Object.values(sq.clips)) {
+    const track = tracks[clip.track] || (tracks[clip.track] = []);
+    track.push(clip);
   }
 
-  root.elem('producer', {
-    id: 'audio',
-    mlt_service: 'avformat',
-    resource: path.join(CACHE_PATH, sqId + '.wav'),
+  const clips = new Map<string, SequenceClip>();
+  const playlists = tracks.map((track, i) => {
+    const playlist = xml('playlist');
+    const sortedClips = track.sort((a, b) => a.offset - b.offset);
+    let x = 0;
+    sortedClips.forEach((clip) => {
+      const id = clip.source;
+      clips.set(id, clip);
+      if (clip.offset > x) {
+        playlist.elem('blank', {
+          length: (clip.offset - x).toString(),
+        });
+      }
+      x = clip.offset + (clip.trimEnd - clip.trimStart);
+      playlist.elem('entry', {
+        producer: id,
+        in: clip.trimStart,
+        out: clip.trimEnd,
+      });
+    });
+    return playlist;
   });
   clips.forEach((clip, id) => {
     root.elem('producer', {
       id,
       mlt_service: 'avformat',
-      resource: path.join(CACHE_PATH, id + '.mp4'),
+      resource: clip.isMedia
+        ? path.resolve(path.dirname(sq.path), clip.source)
+        : path.join(CACHE_PATH, `${id}.${getFileExtension(clip)}`),
     });
   });
 
   const tractor = root.elem('tractor');
   const multitrack = tractor.elem('multitrack');
-  multitrack.add(playlist);
-
-  const maxAudioLength =
-    Math.max(
-      ...Object.values(sq.audioClips).map((clip) => clip.offset - clip.trim_in + clip.trim_out)
-    ) * 30;
-
-  const audioPlaylist = xml('playlist');
-  audioPlaylist.add(
-    xml('entry', {
-      producer: 'audio',
-      in: 0,
-      out: maxAudioLength,
-    })
-  );
-
-  tractor.add(audioPlaylist);
+  playlists.forEach((playlist) => {
+    multitrack.add(playlist);
+  });
 
   return root.stringify();
 }

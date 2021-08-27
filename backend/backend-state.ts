@@ -36,9 +36,9 @@ export type FrontendActionObject = {
 };
 
 type InnerFrontendActionObject<Group extends string> = {
-  [K in keyof ActionObject as GetAction<K>]: K extends `${Group}_${string}`
-    ? MapToFrontendAction<ActionObject[K]>
-    : never;
+  [K in keyof ActionObject as K extends `${Group}_${string}`
+    ? GetAction<K>
+    : never]: K extends `${Group}_${string}` ? MapToFrontendAction<ActionObject[K]> : never;
 };
 
 /** Application state */
@@ -49,15 +49,17 @@ let state: AppState = {
   },
 };
 
+// Not using immer due to reference bugs
 let draft: Draft<AppState> | null = null;
 export async function updateState(cb: ActionFunction) {
   if (draft) {
     return cb(draft);
   }
-  draft = createDraft(state);
+  draft = state;
+  // draft = createDraft(state);
   const result = await cb(draft);
-  const newState = finishDraft(draft);
-  state = newState;
+  // const newState = finishDraft(draft);
+  // state = newState;
   draft = null;
   sendUpdateToAllWindows();
   return result;

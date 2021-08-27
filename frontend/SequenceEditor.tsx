@@ -1,3 +1,4 @@
+import path from 'path';
 import React from 'react';
 import { v4 } from 'uuid';
 import { Sequence } from '../shared/types';
@@ -18,6 +19,15 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
         <code>{JSON.stringify({ ...sq, clips: undefined }, null, 2)}</code>
       </pre>
       <h2>actions</h2>
+      <button
+        onClick={() => {
+          console.log(sq.path);
+          console.log(path.dirname(sq.path));
+          Actions.system.openPath(path.dirname(sq.path));
+        }}
+      >
+        reveal self
+      </button>
       <button
         onClick={async () => {
           const source = await $$stringDialog('source');
@@ -77,13 +87,32 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
       <button
         onClick={async () => {
           const dest = await $$stringDialog('where save');
+          Actions.sequence.exportSequence(sq.id, { filePath: dest });
         }}
       >
         render final video
       </button>
-      <button onClick={() => {}}>run async across all</button>
-      <button onClick={() => {}}>render audio only</button>
-      <button onClick={() => {}}>render all video</button>
+      <button
+        onClick={() => {
+          Actions.sequence.syncAllClips(sq.id);
+        }}
+      >
+        run sync across all
+      </button>
+      <button
+        onClick={() => {
+          Actions.sequence.runAudioRender(sq.id);
+        }}
+      >
+        render audio only
+      </button>
+      <button
+        onClick={() => {
+          Actions.sequence.renderAllClips(sq.id);
+        }}
+      >
+        render all video
+      </button>
       <h2>contents</h2>
       {Object.values(sq.clips).map((clip) => {
         return (
@@ -92,6 +121,20 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             <pre>
               <code>{JSON.stringify(clip, null, 2)}</code>
             </pre>
+            <button
+              onClick={() => {
+                Actions.system.openPath(path.resolve(path.dirname(sq.path), clip.source));
+              }}
+            >
+              open
+            </button>
+            <button
+              onClick={() => {
+                Actions.system.showItemInFolder(path.resolve(path.dirname(sq.path), clip.source));
+              }}
+            >
+              show in folder
+            </button>
             <button
               onClick={() => {
                 Actions.sequence.deleteClip(clip.id);
@@ -149,14 +192,14 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             </button>
             <button
               onClick={async () => {
-                // TODO:
+                Actions.sequence.renderClip(clip.id);
               }}
             >
               render clip (!isMedia)
             </button>
             <button
               onClick={async () => {
-                //
+                Actions.sequence.syncClip(clip.id);
               }}
             >
               update composition (provider=fusion)

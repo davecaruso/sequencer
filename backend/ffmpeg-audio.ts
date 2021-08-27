@@ -1,10 +1,10 @@
 import { spawn } from 'child_process';
 import { mkdir, pathExists } from 'fs-extra';
 import path from 'path';
-import { SequenceAudioClip } from '../../shared/types';
-import { FFMPEG_PATH } from '../paths';
+import { SequenceClip } from '../shared/types';
+import { FFMPEG_PATH } from './paths';
 
-function getCommandArgs(clips: SequenceAudioClip[], outputFile: string): string[] {
+function getCommandArgs(clips: SequenceClip[], outputFile: string): string[] {
   const args: string[] = [];
   clips.forEach((clip) => {
     args.push('-i');
@@ -26,7 +26,7 @@ function getCommandArgs(clips: SequenceAudioClip[], outputFile: string): string[
   return args;
 }
 
-export async function combineAudio(clips: SequenceAudioClip[], outputFile: string): Promise<void> {
+export async function combineAudio(clips: SequenceClip[], outputFile: string): Promise<void> {
   if (!(await pathExists(path.dirname(outputFile)))) {
     await mkdir(path.dirname(outputFile));
   }

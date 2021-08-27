@@ -6,9 +6,9 @@ import { shell } from 'electron';
 import path from 'path';
 
 export async function system_openPath(state: AppState, file: string) {
-  shell.openPath(path.resolve(path.dirname(state.projectFilepath), file));
+  shell.openPath(path.resolve(file));
 }
 
 export async function system_showItemInFolder(state: AppState, file: string) {
-  shell.showItemInFolder(path.resolve(path.dirname(state.projectFilepath), file));
+  shell.showItemInFolder(path.resolve(file));
 }
