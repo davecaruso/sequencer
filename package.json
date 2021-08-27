@@ -1,7 +1,7 @@
 {
   "name": "creative-toolkit",
   "description": "Automation toolkit for building original videos and music as fast as possible without compromising quality",
-  "version": "0.33.1",
+  "version": "0.34.0",
   "author": "dave <dave@davecode.me>",
   "private": true,
   "scripts": {

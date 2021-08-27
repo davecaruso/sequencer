@@ -1,46 +1,51 @@
 export interface AppState {
-  projectFilepath: string;
-  project: Project;
-  fileTree: Record<string, FileTreeItem>;
-  layout: any;
-  loading: boolean;
-  pathdata: any;
-}
-
-export interface Project {
-  number: number;
   resources: Record<string, Resource>;
+  config: CTKConfig;
 }
 
-export interface FileTreeItem {
-  name: string;
-  fullPath: string;
-  type: 'directory' | 'file';
-  contents?: string[];
+export interface CTKConfig {
+  path: {
+    /** Path to where ffmpeg.exe is located. Empty string or unset to use auto-detection */
+    ffmpeg?: string;
+    /** Path to where melt.exe is located. Empty string or unset to use auto-detection */
+    melt?: string;
+    /** Path to where fusion.exe is located. Empty string or unset to use auto-detection */
+    fusion?: string;
+  };
 }
 
-type Resource = Sequence;
+export interface Resource {
+  id: string;
+  type: string;
+}
 
-export interface Sequence {
+export interface ChildResource extends Resource {
+  parent: string;
+}
+
+/* A resource that exists as a file on disk. */
+export interface DiskResource extends Resource {
+  path: string;
+}
+
+export interface Sequence extends DiskResource {
   type: 'sequence';
-  name: string;
-  fusion: Record<string, SequenceFusionClip>;
-  audioClips: Record<string, SequenceAudioClip>;
-  audioDirty: boolean;
+  description: string;
+  clips: Record<string, SequenceClip>;
+  lastAudioRenderTime: number;
 }
 
-export interface SequenceFusionClip {
+export interface SequenceClip extends ChildResource {
+  type: 'sequence-clip';
+  isMedia: boolean;
   source: string;
-  offset: number;
-  duration: number;
-  dirty?: boolean;
-  renderModifiedTime?: number;
-}
-
-export interface SequenceAudioClip {
-  source: string;
+  description: string;
+  // TODO: multitrack support. this interface just shows a single track for now.
   track: number;
   offset: number;
-  trim_in: number;
-  trim_out: number;
+  trimStart: number;
+  trimEnd: number;
+  isDisabled: boolean;
+  trackType: 'audio' | 'video' | 'data';
+  lastExternalRenderTime: number;
 }

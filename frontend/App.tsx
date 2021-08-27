@@ -1,6 +1,7 @@
 import React from 'react';
+import { Sequence } from '../shared/types';
 import { SequenceEditor } from './SequenceEditor';
-import { dispatchAction, useAppState } from './state';
+import { useAppState } from './state';
 import pkg from '../package.json';
 
 export function App() {
@@ -9,17 +10,10 @@ export function App() {
 
   return (
     <div>
-      {app.loading && <h1>loading...</h1>}
-      <h1>toolkit v{pkg.version}</h1>
-      <pre>
-        <code>{JSON.stringify(app.pathdata, null, 2)}</code>
-      </pre>
-      <p>resource viewer is ff52c06f-5bcf-49ca-86d5-cbb29d76c7da</p>
-      <button onClick={() => dispatchAction('Project_Save')}>save self</button>
-      <button onClick={() => dispatchAction('Project_Load')}>load data</button>
-      <button onClick={() => dispatchAction('System_OpenCache')}>cache</button>
-      <button onClick={() => dispatchAction('System_OpenProjectFolder')}>project</button>
-      <SequenceEditor id={'ff52c06f-5bcf-49ca-86d5-cbb29d76c7da'} />
+      ctk v{pkg.version}
+      <SequenceEditor
+        resource={app.resources['ac8d6ce4-524d-4533-9381-4a71eba3b7ac'] as Sequence}
+      />
     </div>
   );
 }

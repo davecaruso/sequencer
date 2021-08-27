@@ -1,14 +1,14 @@
 import EventEmitter from 'eventemitter3';
 import { useEffect, useState } from 'react';
-import { AppState } from '../shared/types';
+import { AppState, Resource } from '../shared/types';
 
 const events = new EventEmitter();
 
-const winId = location.hash.slice(1);
+export const winId = location.hash.slice(1);
 
 let appstate!: AppState;
 
-function handleUpdate(newState: any) {
+function handleUpdate(newState: AppState) {
   appstate = newState;
   events.emit('change');
 }
@@ -21,6 +21,14 @@ export function getAppState() {
 }
 
 export function useAppState() {
+  if (!appstate) {
+    throw new Promise((resolve) => {
+      events.once('change', () => {
+        resolve(appstate);
+      });
+    });
+  }
+
   const update = useState(false)[1];
   useEffect(() => {
     function f() {
@@ -32,6 +40,7 @@ export function useAppState() {
   return appstate;
 }
 
-export async function dispatchAction(action: string, ...args: any[]): Promise<any> {
-  return await CTK.dispatchAction(action, args);
+export function useResource<T extends Resource>(id: string): T {
+  const resources = useAppState().resources;
+  return resources[id] as T;
 }

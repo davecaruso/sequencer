@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 import { mkdir, pathExists } from 'fs-extra';
 import path from 'path';
-import { SequenceAudioClip } from '../shared/types';
-import { FFMPEG_PATH } from './paths';
+import { SequenceAudioClip } from '../../shared/types';
+import { FFMPEG_PATH } from '../paths';
 
 function getCommandArgs(clips: SequenceAudioClip[], outputFile: string): string[] {
   const args: string[] = [];
