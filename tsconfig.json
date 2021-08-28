@@ -15,5 +15,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["./backend", "./frontend", "./shared"]
+  "include": ["./backend", "./frontend", "./shared", "global.d.ts"]
 }

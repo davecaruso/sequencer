@@ -1,7 +1,9 @@
 // Creative Toolkit - by dave caruso
 // Window Manager
+
 import { BrowserWindow } from 'electron';
 import { v4 } from 'uuid';
+import { args } from './args';
 import { getState } from './backend-state';
 
 interface WindowDef {
@@ -21,11 +23,13 @@ export async function openWindow() {
       // frame: false
     }),
   };
-  if (process.env.NODE_ENV === 'development') {
-    def.win.loadURL(__dirname + '/index.html#' + id);
+
+  if (__DEV__) {
+    def.win.loadURL('http://localhost:3000#' + id);
   } else {
-    def.win.loadURL('http://localhost:3000/frontend/index.html#' + id);
+    def.win.loadURL(`file://${__dirname}/index.html#` + id);
   }
+
   windows.set(id, def);
 }
 

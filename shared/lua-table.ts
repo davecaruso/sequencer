@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // fusion format stuff
 // fusion files are lua files that contain just a table. it works similar to json, but lets you do some more stuff
 // this file is a mini library that lets you do stuff with fusion files without wanting to kill yourself.
@@ -192,7 +193,7 @@ export class LuaTable {
     return astToJSON(value);
   }
 
-  set(key: string, value: any) {
+  set(key: string, value: unknown) {
     const field = this.table.fields.find((x) => 'key' in x && astToJSON(x.key) === key);
     if (!field) {
       this.table.fields.push({
@@ -208,7 +209,7 @@ export class LuaTable {
     }
   }
 
-  toArray(): any[] {
+  toArray(): unknown[] {
     return this.table.fields.filter((x) => x.type === 'TableValue').map((x) => astToJSON(x.value));
   }
 

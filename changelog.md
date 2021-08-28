@@ -1,5 +1,8 @@
 # creative toolkit changelog
 
+## 0.34.1
+- Orginized build scripts into ./ctk.mjs
+
 ## 0.34.0
 - Using React in Suspense Mode
 - AppState has been rewritten to mainly be an object of Resources

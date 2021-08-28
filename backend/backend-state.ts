@@ -42,7 +42,7 @@ type InnerFrontendActionObject<Group extends string> = {
 };
 
 /** Application state */
-let state: AppState = {
+const state: AppState = {
   resources: {},
   config: {
     path: {},

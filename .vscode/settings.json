@@ -9,7 +9,12 @@
     "**/.vscode": true,
     "**/tsconfig.json": true,
     "**/vite.config.ts": true,
-    "**/yarn.lock": true
+    "**/yarn.lock": true,
+    "**/.prettierignore": true,
+    "**/.prettierrc": true,
+    "**/.eslintignore": true,
+    "**/.eslintrc.js": true,
+    "**/.gitignore": true
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
