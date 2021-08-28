@@ -9,7 +9,6 @@
 - Sequences now have a single timeline where audio and fusion clips live. these have been heavily
   generalized
 - Fixed bugged fusion render node from appearing. it is not required when fusion 9 is installed.
-- FIXME: Removed the file picker at startup, will need to add back.
 
 ## 0.33.1
 - add action type System_OpenCache
