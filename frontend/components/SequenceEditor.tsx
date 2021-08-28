@@ -1,9 +1,9 @@
 import path from 'path';
 import React from 'react';
 import { v4 } from 'uuid';
-import { Sequence } from '../shared/types';
-import { Actions } from './actions';
-import { $$numberDialog, $$stringDialog } from './frontend_utils';
+import { Sequence } from '../../shared/types';
+import { Actions } from '../frontend-state';
+import { $$numberDialog, $$stringDialog } from '../frontend_utils';
 
 interface SequenceEditorProps {
   resource: Sequence;

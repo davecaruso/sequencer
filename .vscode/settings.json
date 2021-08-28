@@ -14,7 +14,8 @@
     "**/.prettierrc": true,
     "**/.eslintignore": true,
     "**/.eslintrc.js": true,
-    "**/.gitignore": true
+    "**/.gitignore": true,
+    "build": true
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

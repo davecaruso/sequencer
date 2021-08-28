@@ -1,8 +1,8 @@
 import React from 'react';
-import { Sequence } from '../shared/types';
+import { Sequence } from '../../shared/types';
 import { SequenceEditor } from './SequenceEditor';
-import { useAppState } from './state';
-import pkg from '../package.json';
+import { useAppState } from '../frontend-state';
+import pkg from '../../package.json';
 
 export function App() {
   const app = useAppState();

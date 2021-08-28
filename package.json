@@ -1,14 +1,15 @@
 {
   "name": "creative-toolkit",
   "description": "Automation toolkit for building original videos and music as fast as possible without compromising quality",
-  "version": "0.34.0",
+  "version": "0.34.1",
   "author": "dave caruso <dave@davecode.me>",
   "private": true,
   "scripts": {
     "dev": "node ./ctk.mjs run",
     "build": "node ./ctk.mjs build",
     "run": "node ./ctk.mjs run",
-    "lint": "prettier --write . && eslint --fix ."
+    "lint": "prettier --write . && eslint --fix .",
+    "app_install": "Creative Toolkit Setup 0.34.1.exe"
   },
   "dependencies": {
     "eventemitter3": "^4.0.7",
@@ -52,12 +53,9 @@
     "appId": "me.davecode.toolkit",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
+    "icon": "assets/build/icon.png",
     "files": [
-      "index.js",
-      "index.html",
-      "assets",
-      "node_modules",
-      "package.json"
+      "*"
     ],
     "win": {
       "target": [

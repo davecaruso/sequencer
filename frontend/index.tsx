@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './App';
+import { App } from './components/App';
 
 window.process = { cwd: () => '' } as NodeJS.Process;
 

@@ -6,7 +6,7 @@ import { app, dialog, ipcMain } from 'electron';
 import { addResource, dispatch, getState } from './backend-state';
 import { openWindow } from './window';
 import { Sequence } from '../shared/types';
-import { readJson } from 'fs-extra';
+import { resource_open } from './actions/resource';
 
 ipcMain.on('request-update', async (ev) => {
   ev.sender.send('update', getState());
@@ -53,8 +53,7 @@ app.on('ready', async () => {
       lastAudioRenderTime: 0,
     });
   } else {
-    const sequence = await readJson(file[0]);
-    await addResource<Sequence>(sequence);
+    await resource_open(getState(), file[0]);
   }
 
   await openWindow();

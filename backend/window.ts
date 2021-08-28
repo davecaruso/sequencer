@@ -19,8 +19,7 @@ export async function openWindow() {
       webPreferences: {
         preload: 'C:/Code/creative-toolkit/backend/preload.js',
       },
-      // transparent: true,
-      // frame: false
+      frame: false,
     }),
   };
 
