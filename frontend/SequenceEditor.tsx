@@ -21,12 +21,17 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
       <h2>actions</h2>
       <button
         onClick={() => {
-          console.log(sq.path);
-          console.log(path.dirname(sq.path));
           Actions.system.openPath(path.dirname(sq.path));
         }}
       >
         reveal self
+      </button>
+      <button
+        onClick={() => {
+          Actions.resource.save(sq);
+        }}
+      >
+        save file
       </button>
       <button
         onClick={async () => {

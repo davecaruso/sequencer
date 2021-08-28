@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { writeFile } from 'fs-extra';
+import { remove, writeFile } from 'fs-extra';
 import path from 'path';
 import { Sequence, SequenceClip } from '../shared/types';
 import { xml } from '../shared/xml';
@@ -48,8 +48,7 @@ export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
     const sortedClips = track.sort((a, b) => a.offset - b.offset);
     let x = 0;
     sortedClips.forEach((clip) => {
-      const id = clip.source;
-      clips.set(id, clip);
+      clips.set(clip.id, clip);
       if (clip.offset > x) {
         playlist.elem('blank', {
           length: (clip.offset - x).toString(),
@@ -57,7 +56,7 @@ export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
       }
       x = clip.offset + (clip.trimEnd - clip.trimStart);
       playlist.elem('entry', {
-        producer: id,
+        producer: clip.id,
         in: clip.trimStart,
         out: clip.trimEnd,
       });
@@ -84,19 +83,21 @@ export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
 }
 
 export async function renderSequence(sqId: string, sq: Sequence, out: string) {
+  const renderId = `mlt_${Date.now()}`;
   const xml = sequenceToXML(sqId, sq, out);
-  const xmlPath = path.join(CACHE_PATH, sqId + '.xml');
+  const xmlPath = path.join(CACHE_PATH, renderId + '.xml');
   await writeFile(xmlPath, xml);
 
   return new Promise<void>((resolve, reject) => {
     const start = Date.now();
-    console.log(`Rendering sequence ${sqId}`);
+    console.log(`Rendering sequence ${sqId} with ${renderId}`);
     const child = spawn(MELT_PATH, [xmlPath], {
       stdio: 'pipe',
     });
     child.on('error', reject);
     child.on('close', (code) => {
       console.log(`render time: ${Date.now() - start}ms`);
+      remove(xmlPath);
       if (code === 0) {
         resolve();
       } else {

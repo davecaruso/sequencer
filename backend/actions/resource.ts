@@ -8,7 +8,7 @@ import { addResource } from '../backend-state';
 
 export async function resource_save(state: AppState, resource: DiskResource) {
   // TODO: only save modified resources
-  const json = JSON.stringify({ ...resource, path: undefined });
+  const json = JSON.stringify({ ...resource, path: undefined }, null, 2);
   await writeFile(resource.path, json);
 }
 

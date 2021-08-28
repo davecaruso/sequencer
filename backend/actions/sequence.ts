@@ -119,9 +119,11 @@ export async function sequence_exportSequence(
   const sq = state.resources[sqId] as Sequence;
   const { filePath } = options;
 
+  const resolvedFilePath = path.resolve(path.dirname(sq.path), filePath);
+
   await sequence_renderAllClips(state, sqId);
 
-  await renderSequence(sq.id, sq, filePath);
+  await renderSequence(sq.id, sq, resolvedFilePath);
 }
 
 export async function sequence_renderClip(state: AppState, clipId: string) {
