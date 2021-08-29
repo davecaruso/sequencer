@@ -2,6 +2,7 @@
 // Root Component
 
 import React, { Suspense } from 'react';
+import { ResourceInspector } from './ResourceInspector';
 import { Titlebar } from './Titlebar';
 
 export function App() {
@@ -9,7 +10,9 @@ export function App() {
     <>
       <Titlebar />
       <Suspense fallback={'loading'}>
-        <div></div>
+        <div>
+          <ResourceInspector />
+        </div>
       </Suspense>
     </>
   );

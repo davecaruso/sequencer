@@ -68,7 +68,7 @@ export function sequenceToXML(sqId: string, sq: Sequence, out: string) {
       id,
       mlt_service: 'avformat',
       resource: clip.isMedia
-        ? path.resolve(path.dirname(sq.path), clip.source)
+        ? path.resolve(path.dirname(sq.id), clip.source)
         : path.join(CACHE_PATH, `${id}.${getFileExtension(clip)}`),
     });
   });

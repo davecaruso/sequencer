@@ -23,11 +23,6 @@ export interface ChildResource extends Resource {
   parent: string;
 }
 
-/* A resource that exists as a file on disk. */
-export interface DiskResource extends Resource {
-  path: string;
-}
-
 export interface WindowResource extends Resource {
   type: 'window';
   minimized: boolean;
@@ -35,7 +30,7 @@ export interface WindowResource extends Resource {
   pinned: boolean;
 }
 
-export interface Sequence extends DiskResource {
+export interface Sequence extends Resource {
   type: 'sequence';
   description: string;
   clips: Record<string, SequenceClip>;
@@ -57,9 +52,8 @@ export interface SequenceClip extends ChildResource {
   lastExternalRenderTime: number;
 }
 
-export interface FileTreeItem extends Resource {
+export interface FileTreeResource extends Resource {
   type: 'file-tree-item';
-  path: string;
   fileType: 'directory' | 'file';
   contents?: string[];
 }

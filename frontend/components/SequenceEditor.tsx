@@ -12,16 +12,14 @@ interface SequenceEditorProps {
 export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
   return (
     <div>
-      <h1>
-        SequenceEditor {sq.id} aka {sq.path}
-      </h1>
+      <h1>SequenceEditor {sq.id}</h1>
       <pre>
         <code>{JSON.stringify({ ...sq, clips: undefined }, null, 2)}</code>
       </pre>
       <h2>actions</h2>
       <button
         onClick={() => {
-          Actions.system.openPath(path.dirname(sq.path));
+          Actions.system.openPath(path.dirname(sq.id));
         }}
       >
         reveal self
@@ -128,14 +126,14 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             </pre>
             <button
               onClick={() => {
-                Actions.system.openPath(path.resolve(path.dirname(sq.path), clip.source));
+                Actions.system.openPath(path.resolve(path.dirname(sq.id), clip.source));
               }}
             >
               open
             </button>
             <button
               onClick={() => {
-                Actions.system.showItemInFolder(path.resolve(path.dirname(sq.path), clip.source));
+                Actions.system.showItemInFolder(path.resolve(path.dirname(sq.id), clip.source));
               }}
             >
               show in folder

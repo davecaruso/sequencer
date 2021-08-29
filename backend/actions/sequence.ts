@@ -72,11 +72,11 @@ export async function sequence_addClip(state: AppState, sqId: string, clip: Sequ
       ViewInfo = OperatorInfo { Pos = { 100, 50 } },
     }`);
 
-    comp.Tools.set('Background1', background);
+    comp.Tools.set('Background0', background);
     comp.Tools.set('CTK_Output', saver);
 
     const sq = state.resources[sqId] as Sequence;
-    const compPath = path.resolve(path.dirname(sq.path), clip.source);
+    const compPath = path.resolve(path.dirname(sq.id), clip.source);
     await writeFile(compPath, comp.toString());
   }
 }
@@ -119,7 +119,7 @@ export async function sequence_exportSequence(
   const sq = state.resources[sqId] as Sequence;
   const { filePath } = options;
 
-  const resolvedFilePath = path.resolve(path.dirname(sq.path), filePath);
+  const resolvedFilePath = path.resolve(path.dirname(sq.id), filePath);
 
   await sequence_renderAllClips(state, sqId);
 
@@ -134,7 +134,7 @@ export async function sequence_renderClip(state: AppState, clipId: string) {
     return;
   }
 
-  const clipSource = path.resolve(path.dirname(sq.path), clip.source);
+  const clipSource = path.resolve(path.dirname(sq.id), clip.source);
 
   const file = await stat(clipSource);
   if (clip.lastExternalRenderTime && file.mtime.getTime() >= clip.lastExternalRenderTime) return;
@@ -162,7 +162,7 @@ export async function sequence_syncClip(state: AppState, clipId: string) {
     return;
   }
 
-  const clipSource = path.resolve(path.dirname(sq.path), clip.source);
+  const clipSource = path.resolve(path.dirname(sq.id), clip.source);
 
   if (clip.source.endsWith('.comp')) {
     const compText = (await readFile(clipSource)).toString();
