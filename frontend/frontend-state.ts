@@ -22,8 +22,12 @@ export function getAppState() {
   return appstate;
 }
 
-export function useAppState() {
-  if (!appstate) {
+export interface UseAppStateOptions {
+  suspend?: boolean;
+}
+
+export function useAppState(options?: UseAppStateOptions) {
+  if (!appstate && (options?.suspend ?? true)) {
     throw new Promise((resolve) => {
       events.once('change', () => {
         resolve(appstate);
@@ -42,9 +46,9 @@ export function useAppState() {
   return appstate;
 }
 
-export function useResource<T extends Resource>(id: string): T {
-  const resources = useAppState().resources;
-  return resources[id] as T;
+export function useResource<T extends Resource>(id: string, options?: UseAppStateOptions): T {
+  const resources = useAppState(options)?.resources;
+  return resources?.[id] as T;
 }
 
 const fakeProxyObj = {

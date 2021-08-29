@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["./global", "vite/client", "@honkhonk/vite-plugin-svgr/client"],
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
@@ -15,5 +16,5 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": ["./backend", "./frontend", "./shared", "global.d.ts"]
+  "include": ["./backend", "./frontend", "./shared", "./global.d.ts"]
 }

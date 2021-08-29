@@ -1,7 +1,7 @@
 {
   "name": "creative-toolkit",
   "description": "Automation toolkit for building original videos and music as fast as possible without compromising quality",
-  "version": "0.34.1",
+  "version": "0.34.2",
   "author": "dave caruso <dave@davecode.me>",
   "private": true,
   "scripts": {
@@ -12,6 +12,7 @@
     "app_install": "Creative Toolkit Setup 0.34.1.exe"
   },
   "dependencies": {
+    "clsx": "^1.1.1",
     "eventemitter3": "^4.0.7",
     "fs-extra": "^10.0.0",
     "immer": "^9.0.5",
@@ -23,6 +24,7 @@
     "yargs": "^17.1.1"
   },
   "devDependencies": {
+    "@honkhonk/vite-plugin-svgr": "^1.1.0",
     "@types/fs-extra": "^9.0.12",
     "@types/luaparse": "^0.2.8",
     "@types/node": "^16.3.1",
@@ -55,17 +57,22 @@
     "asarUnpack": "**\\*.{node,dll}",
     "icon": "assets/build/icon.png",
     "files": [
-      "*"
+      "node_modules",
+      "assets",
+      "index.html",
+      "backend.js",
+      "package.json"
     ],
     "win": {
       "target": [
-        "nsis"
+        "msi"
       ]
     },
-    "nsis": {
+    "msi": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": true
+      "perMachine": true,
+      "artifactName": "toolkit-${version}.${ext}",
+      "upgradeCode": "637DA55A-8617-47C6-AA37-DAAA541212C1"
     },
     "directories": {
       "app": "build/app",

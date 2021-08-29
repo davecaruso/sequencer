@@ -28,6 +28,13 @@ export interface DiskResource extends Resource {
   path: string;
 }
 
+export interface WindowResource extends Resource {
+  type: 'window';
+  minimized: boolean;
+  maximized: boolean;
+  pinned: boolean;
+}
+
 export interface Sequence extends DiskResource {
   type: 'sequence';
   description: string;
@@ -48,4 +55,11 @@ export interface SequenceClip extends ChildResource {
   isDisabled: boolean;
   trackType: 'audio' | 'video' | 'data';
   lastExternalRenderTime: number;
+}
+
+export interface FileTreeItem extends Resource {
+  type: 'file-tree-item';
+  path: string;
+  fileType: 'directory' | 'file';
+  contents?: string[];
 }

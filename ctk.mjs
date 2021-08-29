@@ -1,3 +1,6 @@
+// Creative Toolkit - by dave caruso
+// Build Script
+
 /* eslint-disable no-undef */
 import fs from 'fs-extra';
 import path from 'path';
@@ -16,7 +19,7 @@ const isBuild = process.argv.includes('build');
 if (isRun && isBuild) process.exit(1);
 
 async function buildBackend() {
-  esbuild({
+  await esbuild({
     entryPoints: ['./backend/index.js'],
     outfile: './build/app/backend.js',
     minify: isBuild,
@@ -30,7 +33,7 @@ async function buildBackend() {
 }
 
 async function buildFrontend() {
-  const x = await viteBuild({
+  await viteBuild({
     root: path.join(dirname, './frontend'),
     config: 'vite.config.ts',
     build: {

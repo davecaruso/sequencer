@@ -1,5 +1,12 @@
 # creative toolkit changelog
 
+## 0.34.2
+- Added some SCSS
+- Added Window resource type
+- Added window management actions
+- Added custom titlebar with always on top button
+- Added frontend debug tool: ResourceInspector
+
 ## 0.34.1
 - Orginized build scripts into ./ctk.mjs
 

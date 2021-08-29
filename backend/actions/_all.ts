@@ -4,3 +4,4 @@
 export * from './sequence';
 export * from './system';
 export * from './resource';
+export * from './window';
