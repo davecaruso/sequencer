@@ -18,6 +18,7 @@ export async function openWindow() {
     win: new BrowserWindow({
       webPreferences: {
         preload: 'C:/Code/creative-toolkit/backend/preload.js',
+        nativeWindowOpen: true,
       },
       frame: false,
     }),
