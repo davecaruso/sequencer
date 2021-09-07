@@ -1,6 +1,6 @@
 // automation for Blackmagic Fusion 17 command line rendering
 import { spawn } from 'child_process';
-import { FUSION_PATH } from './paths';
+import { FUSION_PATH } from '../paths';
 
 function getCommandArgs(comp: string): string[] {
   return ['/render', comp, '/quit'];

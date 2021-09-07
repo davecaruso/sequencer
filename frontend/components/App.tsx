@@ -11,7 +11,7 @@ export function App() {
       <Titlebar />
       <Suspense fallback={'loading'}>
         <div>
-          <FileTree item='C:\' />
+          <FileTree item='C:\Cloud' />
         </div>
       </Suspense>
     </>

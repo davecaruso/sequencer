@@ -7,9 +7,9 @@ import { FComposition } from '../../shared/fcomposition';
 import { FTool } from '../../shared/ftool';
 import { AppState, Sequence, SequenceClip } from '../../shared/types';
 import { addResource } from '../backend-state';
-import { combineAudio } from '../ffmpeg-audio';
-import { renderFusionFile } from '../fusion-automated';
-import { renderSequence } from '../renderSequence';
+import { combineAudio } from '../lib/ffmpeg-audio';
+import { renderFusionFile } from '../lib/fusion-automated';
+import { renderSequence } from '../lib/renderSequence';
 import { CACHE_PATH } from '../paths';
 
 export async function sequence_addClip(state: AppState, sqId: string, clip: SequenceClip) {

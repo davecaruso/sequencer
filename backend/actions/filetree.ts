@@ -2,7 +2,7 @@
 // Functions to request File Tree items from the file system
 
 import { readdir, stat } from 'fs-extra';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 import { AppState, FileTreeResource } from '../../shared/types';
 import { addResource } from '../backend-state';
 
@@ -33,7 +33,7 @@ export async function filetree_fetchContents(state: AppState, filePath: string) 
     const contents = await readdir(filePath);
     entry.contents = (
       await Promise.all(contents.map((x) => filetree_fetchItem(state, `${filePath}/${x}`)))
-    ).map((x) => x.id);
+    ).map((x) => basename(x.id));
   }
 
   return entry;

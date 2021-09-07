@@ -1,8 +1,11 @@
 // Creative Toolkit - by dave caruso
 // UIState, for managing frontend ui state
 
+import { EventEmitter } from 'eventemitter3';
+import { useEffect, useState } from 'react';
 import { Resource } from '../shared/types';
 
+const events = new EventEmitter();
 const uistates = new Map<string, unknown>();
 
 export interface UiStateBase {
@@ -54,12 +57,23 @@ const initialStates: UiStateTypes = {
   },
 };
 
-export function useUIState<T extends keyof UiStateTypes>(type: T, resource: string | Resource) {
+export function useUIState<T extends keyof UiStateTypes>(
+  type: T,
+  resource: string | Resource
+): UiStateTypes[T] {
   const id = typeof resource === 'string' ? resource : resource.id;
   if (!uistates.has(id)) {
     uistates.set(id, initialStates[type]);
   }
-  return uistates.get(id);
+  const update = useState(false)[1];
+  useEffect(() => {
+    function f() {
+      update((x) => !x);
+    }
+    events.on(id, f);
+    return () => void events.off(id, f);
+  }, []);
+  return uistates.get(id) as UiStateTypes[T];
 }
 
 type UIStateAction<T> = (state: T) => T | void;
@@ -73,4 +87,5 @@ export function updateUIState<T extends keyof UiStateTypes>(
   const state = uistates.get(id) ?? initialStates[type];
   const newState = action(state as UiStateTypes[T]);
   uistates.set(id, newState ?? state);
+  events.emit(id);
 }

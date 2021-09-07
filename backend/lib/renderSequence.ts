@@ -1,9 +1,9 @@
 import { spawn } from 'child_process';
 import { remove, writeFile } from 'fs-extra';
 import path from 'path';
-import { Sequence, SequenceClip } from '../shared/types';
-import { xml } from '../shared/xml';
-import { CACHE_PATH, MELT_PATH } from './paths';
+import { Sequence, SequenceClip } from '../../shared/types';
+import { xml } from '../../shared/xml';
+import { CACHE_PATH, MELT_PATH } from './../paths';
 
 function getFileExtension(clip: SequenceClip) {
   if (clip.trackType === 'audio') {
