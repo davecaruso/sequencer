@@ -5,14 +5,15 @@ import { pathExists, readFile, stat, writeFile } from 'fs-extra';
 import path from 'path';
 import { FComposition } from '../../shared/fcomposition';
 import { FTool } from '../../shared/ftool';
-import { AppState, Sequence, SequenceClip } from '../../shared/types';
-import { addResource } from '../backend-state';
+import { addResource, LegacyAppState } from '../backend-state';
 import { combineAudio } from '../lib/ffmpeg-audio';
 import { renderFusionFile } from '../lib/fusion-automated';
 import { renderSequence } from '../lib/renderSequence';
 import { CACHE_PATH } from '../paths';
+import { Sequence, SequenceClip } from '../resources/sequence';
 
-export async function sequence_addClip(state: AppState, sqId: string, clip: SequenceClip) {
+export async function sequence_addClip(state: LegacyAppState, sqId: string, clip: SequenceClip) {
+  throw new Error('Not implemented');
   const sq = state.resources[sqId] as Sequence;
   sq.clips[clip.id] = clip;
   await addResource(clip);
@@ -81,7 +82,8 @@ export async function sequence_addClip(state: AppState, sqId: string, clip: Sequ
   }
 }
 
-export async function sequence_deleteClip(state: AppState, clipId: string) {
+export async function sequence_deleteClip(state: LegacyAppState, clipId: string) {
+  throw new Error('Not implemented');
   const resources = state.resources;
   const clip = resources[clipId] as SequenceClip;
   const sq = state.resources[clip.parent] as Sequence;
@@ -98,11 +100,12 @@ export async function sequence_deleteClip(state: AppState, clipId: string) {
 }
 
 export async function sequence_editClipProp<K extends keyof SequenceClip>(
-  state: AppState,
+  state: LegacyAppState,
   clipId: string,
   prop: K,
   value: SequenceClip[K]
 ) {
+  throw new Error('Not implemented');
   const clip = state.resources[clipId] as SequenceClip;
   clip[prop] = value;
 }
@@ -112,10 +115,11 @@ export interface SequenceExportOptions {
 }
 
 export async function sequence_exportSequence(
-  state: AppState,
+  state: LegacyAppState,
   sqId: string,
   options: SequenceExportOptions
 ) {
+  throw new Error('Not implemented');
   const sq = state.resources[sqId] as Sequence;
   const { filePath } = options;
 
@@ -126,7 +130,8 @@ export async function sequence_exportSequence(
   await renderSequence(sq.id, sq, resolvedFilePath);
 }
 
-export async function sequence_renderClip(state: AppState, clipId: string) {
+export async function sequence_renderClip(state: LegacyAppState, clipId: string) {
+  throw new Error('Not implemented');
   const clip = state.resources[clipId] as SequenceClip;
   const sq = state.resources[clip.parent] as Sequence;
 
@@ -146,7 +151,8 @@ export async function sequence_renderClip(state: AppState, clipId: string) {
   }
 }
 
-export async function sequence_renderAllClips(state: AppState, sqId: string) {
+export async function sequence_renderAllClips(state: LegacyAppState, sqId: string) {
+  throw new Error('Not implemented');
   const sq = state.resources[sqId] as Sequence;
 
   for (const clipId of Object.keys(sq.clips)) {
@@ -154,7 +160,8 @@ export async function sequence_renderAllClips(state: AppState, sqId: string) {
   }
 }
 
-export async function sequence_syncClip(state: AppState, clipId: string) {
+export async function sequence_syncClip(state: LegacyAppState, clipId: string) {
+  throw new Error('Not implemented');
   const clip = state.resources[clipId] as SequenceClip;
   const sq = state.resources[clip.parent] as Sequence;
 
@@ -176,7 +183,8 @@ export async function sequence_syncClip(state: AppState, clipId: string) {
   }
 }
 
-export async function sequence_syncAllClips(state: AppState, sqId: string) {
+export async function sequence_syncAllClips(state: LegacyAppState, sqId: string) {
+  throw new Error('Not implemented');
   const sq = state.resources[sqId] as Sequence;
 
   for (const clipId of Object.keys(sq.clips)) {
@@ -184,7 +192,8 @@ export async function sequence_syncAllClips(state: AppState, sqId: string) {
   }
 }
 
-export async function sequence_runAudioRender(state: AppState, sqId: string) {
+export async function sequence_runAudioRender(state: LegacyAppState, sqId: string) {
+  throw new Error('Not implemented');
   const sq = state.resources[sqId] as Sequence;
 
   // TODO: replace true with a check if the sequence has any audio files newer than the last render time

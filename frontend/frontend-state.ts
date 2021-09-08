@@ -1,38 +1,43 @@
 import EventEmitter from 'eventemitter3';
 import { useEffect, useState } from 'react';
-import { AppState, Resource } from '../shared/types';
-import type { FrontendActionObject } from '../backend/backend-state';
 
+import type { FrontendActionObject } from '../backend/backend-state';
+import type { Resource, ResourceType, ResourceTypes } from '../backend/resource';
+import { WindowResource } from '../backend/resources/window';
+
+const resources = new Map<string, Resource>();
+const promises = new Map<string, Promise<void>>();
 const events = new EventEmitter();
 
 export const winId = location.hash.slice(1);
 
-let appstate!: AppState;
+resources.set(`window://${winId}`, {
+  type: 'window',
+  id: winId,
+  maximized: false,
+  minimized: false,
+  pinned: false,
+  resources: [winId],
+} as WindowResource);
 
-function handleUpdate(newState: AppState) {
-  appstate = newState;
-  console.log('state updated', appstate);
-  events.emit('change');
+function handleUpdate(resource: Resource) {
+  const key = `${resource.type}://${resource.id}`;
+  resources.set(key, resource);
+  events.emit(key, resource);
 }
 
-CTK.setUpdateHandler(handleUpdate);
-CTK.requestUpdate();
+CTK.initialize(handleUpdate);
 
-export function getAppState() {
-  return appstate;
-}
-
-export interface UseAppStateOptions {
-  suspend?: boolean;
-}
-
-export function useAppState(options?: UseAppStateOptions) {
-  if (!appstate && (options?.suspend ?? true)) {
-    throw new Promise((resolve) => {
-      events.once('change', () => {
-        resolve(appstate);
-      });
+export function useResource<T extends ResourceType>(type: T, id: string): ResourceTypes[T] {
+  const key = `${type}://${id}`;
+  if (!resources.has(key)) {
+    if (promises.has(key)) {
+      throw promises.get(key);
+    }
+    const promise = CTK.subscribe(type, id).then(() => {
+      promises.delete(key);
     });
+    promises.set(key, promise);
   }
 
   const update = useState(false)[1];
@@ -40,15 +45,11 @@ export function useAppState(options?: UseAppStateOptions) {
     function f() {
       update((x) => !x);
     }
-    events.on('change', f);
-    return () => void events.off('change', f);
-  }, []);
-  return appstate;
-}
+    events.on(key, f);
+    return () => void events.off(key, f);
+  }, [key]);
 
-export function useResource<T extends Resource>(id: string, options?: UseAppStateOptions): T {
-  const resources = useAppState(options)?.resources;
-  return resources?.[id] as T;
+  return resources.get(key) as ResourceTypes[T];
 }
 
 const fakeProxyObj = {

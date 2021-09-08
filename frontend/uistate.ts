@@ -3,7 +3,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { useEffect, useState } from 'react';
-import { Resource } from '../shared/types';
+import { Resource } from '../backend/resource';
 
 const events = new EventEmitter();
 const uistates = new Map<string, unknown>();
@@ -62,18 +62,22 @@ export function useUIState<T extends keyof UiStateTypes>(
   resource: string | Resource
 ): UiStateTypes[T] {
   const id = typeof resource === 'string' ? resource : resource.id;
-  if (!uistates.has(id)) {
-    uistates.set(id, initialStates[type]);
+  const key = `${type}://${id}`;
+  if (!uistates.has(key)) {
+    uistates.set(key, {
+      ...JSON.parse(JSON.stringify(initialStates[type])),
+      id: id,
+    });
   }
   const update = useState(false)[1];
   useEffect(() => {
     function f() {
       update((x) => !x);
     }
-    events.on(id, f);
-    return () => void events.off(id, f);
+    events.on(key, f);
+    return () => void events.off(key, f);
   }, []);
-  return uistates.get(id) as UiStateTypes[T];
+  return uistates.get(key) as UiStateTypes[T];
 }
 
 type UIStateAction<T> = (state: T) => T | void;
@@ -84,8 +88,12 @@ export function updateUIState<T extends keyof UiStateTypes>(
   action: UIStateAction<UiStateTypes[T]>
 ) {
   const id = typeof resource === 'string' ? resource : resource.id;
-  const state = uistates.get(id) ?? initialStates[type];
+  const key = `${type}://${id}`;
+  const state = uistates.get(key) ?? {
+    ...initialStates[type],
+    id: id,
+  };
   const newState = action(state as UiStateTypes[T]);
-  uistates.set(id, newState ?? state);
-  events.emit(id);
+  uistates.set(key, newState ?? state);
+  events.emit(key);
 }

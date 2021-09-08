@@ -1,17 +1,17 @@
 // Creative Toolkit - by dave caruso
 // Window Actions, used by the titlebar
 
-import { AppState } from '../../shared/types';
+import { LegacyAppState } from '../backend-state';
 import { closeWindow, getWindow } from '../window';
 
-export function window_minimize(state: AppState, windowId: string) {
+export function window_minimize(state: LegacyAppState, windowId: string) {
   const window = getWindow(windowId);
   if (window) {
     window.minimize();
   }
 }
 
-export function window_maximize(state: AppState, windowId: string) {
+export function window_maximize(state: LegacyAppState, windowId: string) {
   const window = getWindow(windowId);
   if (window) {
     if (window.isMaximized()) {
@@ -22,11 +22,11 @@ export function window_maximize(state: AppState, windowId: string) {
   }
 }
 
-export function window_close(state: AppState, windowId: string) {
+export function window_close(state: LegacyAppState, windowId: string) {
   closeWindow(windowId);
 }
 
-export function window_pin(state: AppState, windowId: string) {
+export function window_pin(state: LegacyAppState, windowId: string) {
   const window = getWindow(windowId);
   if (window) {
     window.setAlwaysOnTop(!window.isAlwaysOnTop());

@@ -1,5 +1,14 @@
 # creative toolkit changelog
 
+## 0.35.0
+- Rewrote resources to be more generic and modular
+- Frontend now subscribes to just the resources it needs
+- The current action system may be modified to be more tightly coupled to the resources
+- Fixes a bug with hardcoding the path to the preload script
+- Preload script is written in TypeScript
+- FIXME: Cannot dispatch actions right now
+- FIXME: Cannot edit sequences right now
+
 ## 0.34.2
 - Added some SCSS
 - Added Window resource type

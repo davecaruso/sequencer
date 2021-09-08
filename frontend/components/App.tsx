@@ -10,9 +10,7 @@ export function App() {
     <>
       <Titlebar />
       <Suspense fallback={'loading'}>
-        <div>
-          <FileTree item='C:\Cloud' />
-        </div>
+        <FileTree item='C:\Code' />
       </Suspense>
     </>
   );

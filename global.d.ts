@@ -1,13 +1,6 @@
-import { AppState } from './shared/types';
+import { CTKGlobal } from './backend/preload';
 
 declare global {
-  interface CreativeToolkitGlobal {
-    setUpdateHandler(cb: (p: AppState) => void): void;
-    requestUpdate(): void;
-    dispatchAction(name: string, data: unknown): Promise<unknown>;
-  }
-
-  const CTK: CreativeToolkitGlobal;
-
+  const CTK: CTKGlobal;
   const __DEV__: boolean;
 }

@@ -19,17 +19,30 @@ const isBuild = process.argv.includes('build');
 if (isRun && isBuild) process.exit(1);
 
 async function buildBackend() {
-  await esbuild({
-    entryPoints: ['./backend/index.js'],
-    outfile: './build/app/backend.js',
-    minify: isBuild,
-    bundle: true,
-    platform: 'node',
-    external: ['electron', 'esbuild', ...Object.keys(pkg.dependencies)],
-    define: {
-      __DEV__: !isBuild,
-    },
-  });
+  return Promise.all([
+    esbuild({
+      entryPoints: ['./backend/index.js'],
+      outfile: './build/app/backend.js',
+      minify: isBuild,
+      bundle: true,
+      platform: 'node',
+      external: ['electron', 'esbuild', ...Object.keys(pkg.dependencies)],
+      define: {
+        __DEV__: !isBuild,
+      },
+    }),
+    esbuild({
+      entryPoints: ['./backend/preload.js'],
+      outfile: './build/app/preload.js',
+      minify: isBuild,
+      bundle: true,
+      platform: 'node',
+      external: ['electron', 'esbuild', ...Object.keys(pkg.dependencies)],
+      define: {
+        __DEV__: !isBuild,
+      },
+    }),
+  ]);
 }
 
 async function buildFrontend() {

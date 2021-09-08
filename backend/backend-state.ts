@@ -1,18 +1,25 @@
 // Creative Toolkit - by dave caruso
 // State and Action Dispatcher
 
-import { createDraft, Draft, finishDraft } from 'immer';
-import { AppState, ChildResource, Resource } from '../shared/types';
+import { Draft } from 'immer';
 import * as ACTIONS from './actions/_all';
-import { sendUpdateToAllWindows } from './window';
+import { ChildResource, Resource } from './resource';
 
 export type ActionObject = typeof ACTIONS;
 
 export type ActionName = `${string}_${string}`;
 
-export type ActionFunction = (state: AppState, ...args: never[]) => Promise<unknown> | unknown;
+/** @deprecated */
+export interface LegacyAppState {
+  resources: Record<string, Resource>;
+}
+
+export type ActionFunction = (
+  state: LegacyAppState,
+  ...args: never[]
+) => Promise<unknown> | unknown;
 export type ActionParameters<F extends ActionFunction> = F extends (
-  state: AppState,
+  state: LegacyAppState,
   ...args: infer args
 ) => Promise<unknown>
   ? args extends unknown[]
@@ -25,7 +32,7 @@ export type GetAction<S> = S extends `${string}_${infer A}` ? A : never;
 
 // make function always async and remove the first arg
 export type MapToFrontendAction<F extends ActionFunction> = F extends (
-  state: AppState,
+  state: LegacyAppState,
   ...args: infer A
 ) => infer R
   ? (...args: A) => R extends Promise<unknown> ? R : Promise<R>
@@ -42,16 +49,13 @@ type InnerFrontendActionObject<Group extends string> = {
 };
 
 /** Application state */
-const state: AppState = {
+const state: LegacyAppState = {
   resources: {},
-  config: {
-    path: {},
-  },
 };
 
 // Not using immer due to reference bugs
-let draft: Draft<AppState> | null = null;
-export async function updateState(cb: ActionFunction) {
+let draft: Draft<LegacyAppState> | null = null;
+export async function updateLegacyState(cb: ActionFunction) {
   if (draft) {
     return cb(draft);
   }
@@ -61,7 +65,6 @@ export async function updateState(cb: ActionFunction) {
   // const newState = finishDraft(draft);
   // state = newState;
   draft = null;
-  sendUpdateToAllWindows();
   return result;
 }
 
@@ -72,7 +75,7 @@ export async function dispatch<A extends keyof ActionObject>(
 ) {
   const start = Date.now();
   try {
-    const result = await updateState(async (draft) => {
+    const result = await updateLegacyState(async (draft) => {
       const action = ACTIONS[actionId] as typeof ACTIONS[A];
       // @ts-expect-error Spread does not work because the type is too broad
       return await action(draft, ...options);
@@ -96,7 +99,7 @@ async function traverseAndAdd(obj: Record<never, unknown>, parent: Resource) {
           return addResource({
             ...value,
             parent: parent.id,
-          } as ChildResource);
+          } as ChildResource<any>);
         } else {
           return traverseAndAdd(value, parent);
         }
@@ -106,18 +109,18 @@ async function traverseAndAdd(obj: Record<never, unknown>, parent: Resource) {
 }
 
 export async function addResource<T extends Resource>(resource: T) {
-  await updateState((state) => {
+  await updateLegacyState((state) => {
     state.resources[resource.id] = resource;
     traverseAndAdd(resource, resource);
   });
 }
 
 export async function removeResource(resource: Resource) {
-  await updateState((state) => {
+  await updateLegacyState((state) => {
     delete state.resources[resource.id];
   });
 }
 
-export function getState(): AppState {
+export function getState(): LegacyAppState {
   return state;
 }

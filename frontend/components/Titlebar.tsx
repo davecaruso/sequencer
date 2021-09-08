@@ -3,7 +3,6 @@
 import React from 'react';
 import { Actions, useResource, winId } from '../frontend-state';
 import c from './Titlebar.module.scss';
-import { WindowResource } from '../../shared/types';
 import pkg from '../../package.json';
 
 import appicon from '../../assets/icon.png';
@@ -15,7 +14,7 @@ import PinSVG from '../../assets/fluent-icons/pin.svg?component';
 import UnpinSVG from '../../assets/fluent-icons/unpin.svg?component';
 
 export function Titlebar() {
-  const win = useResource<WindowResource>(winId, { suspend: false }) || {};
+  const win = useResource('window', winId);
 
   function $close() {
     Actions.window.close(winId);
