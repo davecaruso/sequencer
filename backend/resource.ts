@@ -18,7 +18,8 @@ export interface ResourceEvent<Type extends Resource> {
 
 export interface CreateResourceFileType<Type extends Resource, NoID = Omit<Type, 'id'>> {
   type: Type['type'];
-  load: (filepath: string, event: ResourceEvent<Type>) => Promise<NoID>;
+  parent?: string;
+  load?: (filepath: string, event: ResourceEvent<Type>) => Promise<NoID>;
   save?: (filepath: string, resource: NoID, event: ResourceEvent<Type>) => Promise<void>;
   default?: () => Promise<NoID>;
 }
@@ -94,7 +95,7 @@ export function subscribeResource<T extends ResourceType>(type: T, id: string, w
   const key = `${type}://${id}`;
   const arr = subscriptions.get(key) || [];
   arr.push(windowId);
-  subscriptions.set(type, arr);
+  subscriptions.set(key, arr);
 }
 
 export function unsubscribeResource<T extends ResourceType>(type: T, id: string, windowId: string) {

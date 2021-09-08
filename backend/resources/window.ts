@@ -1,4 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron';
+import { dispatch } from '../backend-state';
 import {
   addResource,
   createResourceType,
@@ -33,7 +34,7 @@ ipcMain.handle('subscribe', async (event, type: ResourceType, resourceId: string
   window.__window!.webContents.send('resource', trimmed);
 
   updateResource('window', window.id, (w) => {
-    w.resources.push(resourceId);
+    w.resources.push(`${type}://${resourceId}`);
     return w;
   });
 
@@ -49,9 +50,13 @@ ipcMain.handle('unsubscribe', async (event, type: ResourceType, resourceId: stri
   unsubscribeResource(type, resourceId, window.id);
 
   updateResource('window', window.id, (w) => {
-    w.resources = w.resources.filter((id) => id !== resourceId);
+    w.resources = w.resources.filter((id) => id !== `${type}://${resourceId}`);
     return w;
   });
+});
+
+ipcMain.handle('dispatch', (event, actionId: string, data: any) => {
+  return dispatch(actionId as any, data);
 });
 
 export const window = createResourceType<WindowResource>({
@@ -99,7 +104,9 @@ export function createWindow() {
     minimized: false,
     maximized: false,
     pinned: false,
-    resources: [id],
+    resources: [`window://${id}`],
     __window: window,
   });
+
+  subscribeResource('window', id, id);
 }

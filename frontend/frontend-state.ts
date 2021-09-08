@@ -12,12 +12,12 @@ const events = new EventEmitter();
 export const winId = location.hash.slice(1);
 
 resources.set(`window://${winId}`, {
-  type: 'window',
   id: winId,
-  maximized: false,
+  type: 'window',
   minimized: false,
+  maximized: false,
   pinned: false,
-  resources: [winId],
+  resources: [`window://${winId}`],
 } as WindowResource);
 
 function handleUpdate(resource: Resource) {
@@ -69,7 +69,7 @@ export const Actions = new Proxy(fakeProxyObj, {
     const innerProxy = new Proxy(fakeProxyObj, {
       get: (_, key: string) => {
         const method = (...args: unknown[]) => {
-          return CTK.dispatchAction(`${group}_${key}`, args);
+          return CTK.dispatch(`${group}_${key}` as any, args);
         };
 
         methodCache.set(key, method);

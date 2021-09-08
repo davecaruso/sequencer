@@ -1,18 +1,17 @@
 // Creative Toolkit - by dave caruso
 // Window Actions, used by the titlebar
 
-import { LegacyAppState } from '../backend-state';
-import { closeWindow, getWindow } from '../window';
+import { ActionEvent } from '../backend-state';
 
-export function window_minimize(state: LegacyAppState, windowId: string) {
-  const window = getWindow(windowId);
+export async function window_minimize(event: ActionEvent, windowId: string) {
+  const { __window: window } = await event.fetchResource('window', windowId);
   if (window) {
     window.minimize();
   }
 }
 
-export function window_maximize(state: LegacyAppState, windowId: string) {
-  const window = getWindow(windowId);
+export async function window_maximize(event: ActionEvent, windowId: string) {
+  const { __window: window } = await event.fetchResource('window', windowId);
   if (window) {
     if (window.isMaximized()) {
       window.unmaximize();
@@ -22,12 +21,16 @@ export function window_maximize(state: LegacyAppState, windowId: string) {
   }
 }
 
-export function window_close(state: LegacyAppState, windowId: string) {
-  closeWindow(windowId);
+export async function window_close(event: ActionEvent, windowId: string) {
+  const { __window: window } = await event.fetchResource('window', windowId);
+  if (window) {
+    window.close();
+  }
+  // TODO: remove window from state
 }
 
-export function window_pin(state: LegacyAppState, windowId: string) {
-  const window = getWindow(windowId);
+export async function window_pin(event: ActionEvent, windowId: string) {
+  const { __window: window } = await event.fetchResource('window', windowId);
   if (window) {
     window.setAlwaysOnTop(!window.isAlwaysOnTop());
   }

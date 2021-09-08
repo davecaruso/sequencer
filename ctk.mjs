@@ -19,7 +19,7 @@ const isBuild = process.argv.includes('build');
 if (isRun && isBuild) process.exit(1);
 
 async function buildBackend() {
-  return Promise.all([
+  await Promise.all([
     esbuild({
       entryPoints: ['./backend/index.js'],
       outfile: './build/app/backend.js',

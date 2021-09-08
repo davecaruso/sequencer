@@ -31,6 +31,13 @@ export interface SequenceClip extends ChildResource<Sequence> {
   lastExternalRenderTime: number;
 }
 
+export type SequenceClipPartial = Omit<SequenceClip, 'parent' | 'id'>;
+
+export const sequenceClip = createResourceType<SequenceClip>({
+  type: 'sequence-clip',
+  parent: 'sequence',
+});
+
 export const sequence = createResourceType<Sequence>({
   type: 'sequence',
   async load(filepath, ev) {

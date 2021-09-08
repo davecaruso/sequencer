@@ -2,7 +2,7 @@
 // Root Component
 
 import React, { Suspense } from 'react';
-import { FileTree } from './FileTree';
+import { useResource, winId } from '../frontend-state';
 import { Titlebar } from './Titlebar';
 
 export function App() {
@@ -10,7 +10,7 @@ export function App() {
     <>
       <Titlebar />
       <Suspense fallback={'loading'}>
-        <FileTree item='C:\Code' />
+        {JSON.stringify(useResource('window', winId), null, 2)}
       </Suspense>
     </>
   );
