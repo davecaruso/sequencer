@@ -6,6 +6,7 @@
 - The current action system may be modified to be more tightly coupled to the resources
 - Fixes a bug with hardcoding the path to the preload script
 - Preload script is written in TypeScript
+- Fix actions with arguments being setup properly
 - FIXME: Cannot edit sequences right now
 
 ## 0.34.2

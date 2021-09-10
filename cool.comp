@@ -1,0 +1,81 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 100 },
+	GlobalRange = { 0, 100 },
+	CurrentID = 1,
+	HiQ = true,
+	PlaybackUpdateMode = 0,
+	Version = "Node.JS",
+	SavedOutputs = 0,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	AutoRenderRange = true,
+	Resumable = true,
+	OutputClips = {},
+	Tools = {
+		Background0 = Background {
+			Inputs = {
+				Width = Input {
+					Value = 1920,
+				},
+				Height = Input {
+					Value = 1080,
+				},
+				TopLeftRed = Input {
+					Value = 0.62,
+				},
+				TopLeftGreen = Input {
+					Value = 0.4,
+				},
+				TopLeftBlue = Input {
+					Value = 0.2,
+				},
+			},
+			ViewInfo = OperatorInfo {
+				Pos = { 100, 50 },
+			},
+		},
+		CTK_Output = Saver {
+			NameSet = true,
+			Inputs = {
+				Clip = Input {
+					Value = Clip {
+						Filename = "C:\\Code\\creative-toolkit\\.cache\\2c2959cf-8e9b-442e-a94f-ac7e7b9e0656.mp4",
+						FormatID = "QuickTimeMovies",
+						Length = 0,
+						Saving = true,
+						TrimIn = 0,
+						ExtendFirst = 0,
+						ExtendLast = 0,
+						Loop = 1,
+						AspectMode = 0,
+						Depth = 0,
+						GlobalStart = -2000000000,
+						GlobalEnd = 0,
+					},
+				},
+				Input = Input {
+					SourceOp = "Background1",
+					Source = "Output",
+				},
+				OutputFormat = Input {
+					Value = FuID { "QuickTimeMovies" },
+				},
+				["QuickTimeMovies.Compression"] = Input {
+					Value = FuID { "H.264_avc1" },
+				},
+				["QuickTimeMovies.Advanced"] = Input {
+					Value = 1,
+				},
+			},
+			ViewInfo = OperatorInfo {
+				Pos = { 750, 50 },
+			},
+		},
+	},
+	Frames = {},
+	Prefs = {},
+	AudioFilename = "C:\\Code\\creative-toolkit\\.cache\\C:\\Code\\creative-toolkit\\test.sq.wav",
+}

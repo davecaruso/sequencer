@@ -8,8 +8,7 @@ export interface FileTreeProps {
 }
 
 export function FileTree({ item }: FileTreeProps) {
-  const resource = useResource('file-tree-item', item);
-  const uistate = useUIState('file-tree-item', item);
+  const [resource, uistate] = useResource('file-tree-item', item);
 
   function $click() {
     if (resource.fileType === 'directory') {

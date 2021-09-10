@@ -61,6 +61,8 @@ export async function dispatch<A extends keyof ActionObject>(
     addResource,
   };
 
+  console.log(args);
+
   const start = Date.now();
 
   const actionFunction = ACTIONS[action] as ActionObject[A];

@@ -30,7 +30,7 @@ const CTK = {
   async unsubscribe(type: ResourceType, id: string) {
     await ipcRenderer.invoke('unsubscribe', type, id);
   },
-  dispatch: (async (actionId, ...data) => {
+  dispatch: (async (actionId, data) => {
     return await ipcRenderer.invoke('dispatch', actionId, data);
   }) as typeof dispatch,
 };

@@ -53,6 +53,7 @@ export async function fetchResource<T extends ResourceType>(
   if (!resourceMeta) {
     throw new Error(`Unknown resource type ${type}`);
   }
+  // TODO: Un-fuck this shit so there aren't more type errors than nukes in the us military
   if (resourceMeta.load) {
     const resource = await resourceMeta.load(id, {
       loadChild: (child) => {
