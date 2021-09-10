@@ -1,20 +1,21 @@
 import path from 'path';
 import React from 'react';
 import { v4 } from 'uuid';
-import { Sequence } from '../../shared/types';
-import { Actions } from '../frontend-state';
+import { Actions, useResource } from '../frontend-state';
 import { $$numberDialog, $$stringDialog } from '../frontend_utils';
 
 interface SequenceEditorProps {
-  resource: Sequence;
+  id: string;
 }
 
-export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
+export function SequenceEditor({ id }: SequenceEditorProps) {
+  const [sq, ui] = useResource('sequence', id);
+
   return (
     <div>
       <h1>SequenceEditor {sq.id}</h1>
       <pre>
-        <code>{JSON.stringify({ ...sq, clips: undefined }, null, 2)}</code>
+        <code>{JSON.stringify(sq, null, 2)}</code>
       </pre>
       <h2>actions</h2>
       <button
@@ -29,7 +30,7 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
           Actions.resource.save(sq);
         }}
       >
-        save file
+        save file@no-op
       </button>
       <button
         onClick={async () => {
@@ -40,7 +41,6 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
 
           const id = v4();
           Actions.sequence.addClip(sq.id, {
-            id,
             type: 'sequence-clip',
             source,
             lastExternalRenderTime: 0,
@@ -48,7 +48,6 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             isMedia: false,
             isDisabled: false,
             description: '',
-            parent: sq.id,
             offset,
             trimStart: 0,
             trimEnd: duration,
@@ -68,7 +67,6 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
 
           const id = v4();
           Actions.sequence.addClip(sq.id, {
-            id,
             type: 'sequence-clip',
             source,
             lastExternalRenderTime: 0,
@@ -76,7 +74,6 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             isMedia: true,
             isDisabled: false,
             description: '',
-            parent: sq.id,
             offset,
             trimStart: trim_in,
             trimEnd: trim_out,
@@ -93,21 +90,21 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
           Actions.sequence.exportSequence(sq.id, { filePath: dest });
         }}
       >
-        render final video
+        render final video@no-op
       </button>
       <button
         onClick={() => {
           Actions.sequence.syncAllClips(sq.id);
         }}
       >
-        run sync across all
+        run sync across all clips@no-op
       </button>
       <button
         onClick={() => {
           Actions.sequence.runAudioRender(sq.id);
         }}
       >
-        render audio only
+        render audio only@no-op
       </button>
       <button
         onClick={() => {
@@ -117,7 +114,7 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
         render all video
       </button>
       <h2>contents</h2>
-      {Object.values(sq.clips).map((clip) => {
+      {/* {Object.values(sq.clips).map((clip) => {
         return (
           <div key={clip.id}>
             <h3>{clip.id}</h3>
@@ -209,7 +206,7 @@ export function SequenceEditor({ resource: sq }: SequenceEditorProps) {
             </button>
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 // Root Component
 
 import React, { Suspense } from 'react';
-import { useResource, winId } from '../frontend-state';
+import { SequenceEditor } from './SequenceEditor';
 import { Titlebar } from './Titlebar';
 
 export function App() {
@@ -10,7 +10,7 @@ export function App() {
     <>
       <Titlebar />
       <Suspense fallback={'loading'}>
-        {JSON.stringify(useResource('window', winId), null, 2)}
+        <SequenceEditor id='C:\Code\creative-toolkit\test.sq' />
       </Suspense>
     </>
   );

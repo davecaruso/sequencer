@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { FrontendActionObject } from '../backend/backend-state';
 import type { Resource, ResourceType, ResourceTypes } from '../backend/resource';
 import { WindowResource } from '../backend/resources/window';
+import { UiStateTypes, useUIState } from './uistate';
 
 const resources = new Map<string, Resource>();
 const promises = new Map<string, Promise<void>>();
@@ -28,7 +29,10 @@ function handleUpdate(resource: Resource) {
 
 CTK.initialize(handleUpdate);
 
-export function useResource<T extends ResourceType>(type: T, id: string): ResourceTypes[T] {
+export function useResource<T extends ResourceType>(
+  type: T,
+  id: string
+): [ResourceTypes[T], UiStateTypes[T]] {
   const key = `${type}://${id}`;
   if (!resources.has(key)) {
     if (promises.has(key)) {
@@ -49,7 +53,7 @@ export function useResource<T extends ResourceType>(type: T, id: string): Resour
     return () => void events.off(key, f);
   }, [key]);
 
-  return resources.get(key) as ResourceTypes[T];
+  return [resources.get(key) as ResourceTypes[T], useUIState(type, id)];
 }
 
 const fakeProxyObj = {

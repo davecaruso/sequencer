@@ -61,6 +61,7 @@ ipcMain.handle('dispatch', (event, actionId: string, data: any) => {
 
 export const window = createResourceType<WindowResource>({
   type: 'window',
+  ui: {},
   async load() {
     throw new Error('Cannot load type=window');
   },

@@ -36,10 +36,12 @@ export type SequenceClipPartial = Omit<SequenceClip, 'parent' | 'id'>;
 export const sequenceClip = createResourceType<SequenceClip>({
   type: 'sequence-clip',
   parent: 'sequence',
+  ui: {},
 });
 
 export const sequence = createResourceType<Sequence>({
   type: 'sequence',
+  ui: {},
   async load(filepath, ev) {
     const data = await readFile(filepath, 'utf8');
     const json = JSON.parse(data) as SequenceFileFormat;

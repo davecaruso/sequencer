@@ -9,6 +9,9 @@ export interface FileTreeResource extends Resource {
 
 export const fileTreeItem = createResourceType<FileTreeResource>({
   type: 'file-tree-item',
+  ui: {
+    expanded: false,
+  },
   async load(filepath, event) {
     console.log('file-tree-item', filepath);
     const stats = await stat(filepath);

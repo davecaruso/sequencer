@@ -19,6 +19,7 @@ export interface ResourceEvent<Type extends Resource> {
 export interface CreateResourceFileType<Type extends Resource, NoID = Omit<Type, 'id'>> {
   type: Type['type'];
   parent?: string;
+  ui: any;
   load?: (filepath: string, event: ResourceEvent<Type>) => Promise<NoID>;
   save?: (filepath: string, resource: NoID, event: ResourceEvent<Type>) => Promise<void>;
   default?: () => Promise<NoID>;
@@ -52,18 +53,21 @@ export async function fetchResource<T extends ResourceType>(
   if (!resourceMeta) {
     throw new Error(`Unknown resource type ${type}`);
   }
-  const resource = await resourceMeta.load(id, {
-    loadChild: (child) => {
-      // TODO: Track child resources
-      resources.set(`${child.type}://${child.id}`, child);
-    },
-    getChild: (childId) => {
-      return resources.get(`${'sequence-clip'}://${childId}`) as any;
-    },
-  });
-  const withId = { ...resource, id, type };
-  resources.set(key, withId);
-  return withId as any;
+  if (resourceMeta.load) {
+    const resource = await resourceMeta.load(id, {
+      loadChild: (child) => {
+        // TODO: Track child resources
+        resources.set(`${child.type}://${child.id}`, child);
+      },
+      getChild: (childId) => {
+        return resources.get(`${'sequence-clip'}://${childId}`) as any;
+      },
+    });
+    const withId = { ...resource, id, type };
+    resources.set(key, withId);
+    return withId as any;
+  }
+  throw new Error(`Resource type ${type} is not loaded and cannot be fetched`);
 }
 
 export async function updateResource<T extends ResourceType>(

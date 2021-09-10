@@ -53,7 +53,7 @@ type InnerFrontendActionObject<Group extends string> = {
 
 export async function dispatch<A extends keyof ActionObject>(
   action: A,
-  ...args: ActionParameters<ActionObject[A]>
+  args: ActionParameters<ActionObject[A]>
 ): Promise<ActionReturn<ActionObject[A]>> {
   const event: ActionEvent = {
     fetchResource,
