@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import path from 'path';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SequenceClip } from '../../backend/resources/_all';
-import { Actions, useProject, useResource } from '../frontend-state';
+import { Actions, useAllResources, useProject, useResource } from '../frontend-state';
 import { useAudioTag } from '../useAudioTag';
 import { useBuffer } from '../useBuffer';
+import { AspectRatioFrame } from './AspectRatioFrame';
 import c from './SequenceEditor.module.scss';
-
-const SQ_FPS = 30; // TODO: make this configurable
 
 interface ResourceViewerProps {
   id: string;
@@ -22,6 +22,8 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
   const [playhead, setPlayhead] = useState(20);
   const [playStopHandler, setPlayStopHandler] = useState<null | { stop: () => void }>(null);
 
+  const allClipsResolved = useAllResources('sequence-clip', sq.clips);
+
   function $save() {}
 
   function $playheadDrag(ev: React.MouseEvent) {
@@ -31,7 +33,7 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
 
     const onMouseMove = (ev: MouseEvent) => {
       const delta = ev.clientX - startX;
-      setPlayhead(playhead + delta / pixelsPerFrame);
+      setPlayhead(Math.round(playhead + delta / pixelsPerFrame));
     };
 
     const onMouseUp = (ev: MouseEvent) => {
@@ -49,7 +51,7 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
 
     let playing = true;
     function render() {
-      setPlayhead(Math.round(audio.currentTime * SQ_FPS));
+      setPlayhead(Math.round(audio.currentTime * sq.fps));
 
       if (playing) {
         requestAnimationFrame(render);
@@ -61,18 +63,22 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
       stop: () => {
         playing = false;
         audio.pause();
-        setPlayhead(Math.round(audio.currentTime * SQ_FPS));
+        setPlayhead(Math.round(audio.currentTime * sq.fps));
         setPlayStopHandler(null);
       },
     });
 
-    audio.currentTime = playhead / SQ_FPS;
+    audio.currentTime = playhead / sq.fps;
     audio.play();
   }
 
   function $insertRawMedia() {}
 
   function $insertFusionClip() {}
+
+  const clipsAtCurrentTime = allClipsResolved
+    .filter((clip) => clip.offset <= playhead && clip.offset + clip.duration > playhead)
+    .sort((a, b) => a.track - b.track);
 
   return (
     <div
@@ -96,7 +102,20 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
           <button onClick={$insertFusionClip}>fusion</button>
         </div>
         <div className={c.viewer}>
-          <div>VIEWER</div>
+          <AspectRatioFrame aspectRatio={sq.height / sq.width}>
+            <div className={c.viewerInner}>
+              {clipsAtCurrentTime.map((clip) => {
+                return (
+                  <ViewerClip
+                    key={clip.id}
+                    id={clip.id}
+                    playhead={playhead}
+                    isPlaying={!!playStopHandler?.stop}
+                  />
+                );
+              })}
+            </div>
+          </AspectRatioFrame>
         </div>
       </div>
       <div className={c.timeline}>
@@ -147,6 +166,7 @@ function ClipUI({ id }: ResourceViewerProps) {
     if (target.classList.contains(c.handleRight)) {
       dragType = duration;
     } else if (target.classList.contains(c.handleLeft)) {
+      // TODO: Handle the case for when there is no trimStart (fusion and code clips)
       const startTrimIn = trimStart.value;
       const startDuration = duration.value;
       const startOffset = offset.value;
@@ -170,6 +190,11 @@ function ClipUI({ id }: ResourceViewerProps) {
           duration.setValue(startDuration + startTrimIn - normalizedV);
           offset.setValue(startOffset - startTrimIn + normalizedV);
           trimStart.setValue(normalizedV);
+        },
+        reset() {
+          duration.reset();
+          offset.reset();
+          trimStart.reset();
         },
       };
     }
@@ -226,5 +251,37 @@ function ClipUI({ id }: ResourceViewerProps) {
       </div>
       <div>{String(trimStart.value)}</div>
     </div>
+  );
+}
+
+interface ViewerClipProps {
+  id: string;
+  playhead: number;
+  isPlaying: boolean;
+}
+
+export function ViewerClip({ id, playhead, isPlaying }: ViewerClipProps) {
+  const [clip] = useResource('sequence-clip', id);
+  const [sq] = useResource('sequence', `C:\\Code\\creative-toolkit\\sample\\test.sq`);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = (playhead - clip.offset + clip.trimStart) / sq.fps;
+      if (isPlaying) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isPlaying ? true : playhead, videoRef.current]);
+
+  return (
+    <video
+      ref={videoRef}
+      muted
+      src={path.join(`C:\\Code\\creative-toolkit\\sample`, clip.source)}
+    />
   );
 }

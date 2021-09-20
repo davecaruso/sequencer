@@ -27,6 +27,7 @@
     "path-browserify": "^1.0.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
+    "react-use-measure": "^2.0.4",
     "remotion": "^2.3.4",
     "uuid": "^8.3.2",
     "yargs": "^17.1.1"

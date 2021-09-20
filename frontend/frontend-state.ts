@@ -56,6 +56,46 @@ export function useResource<T extends ResourceType>(
   return [resources.get(key) as ResourceTypes[T], useUIState(type, id)];
 }
 
+export function useAllResources<T extends ResourceType>(
+  type: T,
+  ids: string[]
+): ResourceTypes[T][] {
+  const promiseList = [];
+  for (const id of ids) {
+    const key = `${type}://${id}`;
+    if (!resources.has(key)) {
+      if (promises.has(key)) {
+        promiseList.push(promises.get(key));
+      }
+      const promise = CTK.subscribe(type, id).then(() => {
+        promises.delete(key);
+      });
+      promises.set(key, promise);
+    }
+  }
+
+  if (promiseList.length > 0) {
+    throw Promise.all(promiseList);
+  }
+
+  const update = useState(false)[1];
+  useEffect(() => {
+    function f() {
+      update((x) => !x);
+    }
+    ids.forEach((id) => {
+      events.on(`${type}://${id}`, f);
+    });
+    return () => {
+      ids.forEach((id) => {
+        events.off(`${type}://${id}`, f);
+      });
+    };
+  }, [ids.join('+')]);
+
+  return ids.map((id) => resources.get(`${type}://${id}`) as ResourceTypes[T]);
+}
+
 export function useProject(resource: { project: string }) {
   return useResource('project', resource.project)[0];
 }
