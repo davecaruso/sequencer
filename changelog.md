@@ -4,6 +4,7 @@
 - Removed audio support from sequences
 - Added Project resource type.
 - Started work on the real sequence editor
+- Installed Monaco and Remotion
 
 ## 0.35.0
 - Rewrote resources to be more generic and modular
