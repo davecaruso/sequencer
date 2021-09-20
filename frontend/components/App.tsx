@@ -10,7 +10,7 @@ export function App() {
     <>
       <Titlebar />
       <Suspense fallback={'loading'}>
-        <SequenceEditor id='C:\Code\creative-toolkit\test.sq' />
+        <SequenceEditor id='C:\Code\creative-toolkit\sample\test.sq' />
       </Suspense>
     </>
   );

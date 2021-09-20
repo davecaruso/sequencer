@@ -1,100 +1,92 @@
 // Creative Toolkit - by dave caruso
 // Sequence Actions
 
-import { pathExists, readFile, stat, writeFile } from 'fs-extra';
-import path from 'path';
-import { v4 } from 'uuid';
-import { FComposition } from '../../shared/fcomposition';
-import { FTool } from '../../shared/ftool';
 import { ActionEvent } from '../backend-state';
-import { combineAudio } from '../lib/ffmpeg-audio';
-import { renderFusionFile } from '../lib/fusion-automated';
-import { renderSequence } from '../lib/renderSequence';
-import { CACHE_PATH } from '../paths';
-import { Sequence, SequenceClip, SequenceClipPartial } from '../resources/sequence';
+import { updateResource } from '../resource';
+import { SequenceClip } from '../resources/sequence';
 
-export async function sequence_addClip(
-  event: ActionEvent,
-  sqId: string,
-  clip: SequenceClipPartial
-) {
-  const sq = await event.fetchResource('sequence', sqId);
+// export async function sequence_addClip(
+//   event: ActionEvent,
+//   sqId: string,
+//   clip: SequenceClipPartial
+// ) {
+//   const sq = await event.fetchResource('sequence', sqId);
 
-  const id = v4();
+//   const id = v4();
 
-  event.updateResource('sequence', sqId, (s) => {
-    s.clips.push(id);
-    return s;
-  });
+//   event.updateResource('sequence', sqId, (s) => {
+//     s.clips.push(id);
+//     return s;
+//   });
 
-  await event.addResource({
-    id,
-    parent: sq,
-    ...clip,
-  } as SequenceClip);
+//   await event.addResource({
+//     id,
+//     parent: sq,
+//     ...clip,
+//   } as SequenceClip);
 
-  if (clip.source.endsWith('.comp')) {
-    const comp = (await pathExists(clip.source))
-      ? new FComposition((await readFile(clip.source)).toString())
-      : FComposition.create();
+//   if (clip.source.endsWith('.comp')) {
+//     const comp = (await pathExists(clip.source))
+//       ? new FComposition((await readFile(clip.source)).toString())
+//       : FComposition.create();
 
-    comp.RenderRangeStart = clip.offset;
-    comp.RenderRangeEnd = clip.offset + clip.trimEnd;
-    comp.GlobalRange = comp.RenderRange;
-    comp.CurrentTime = comp.RenderRangeStart;
-    comp.AudioFilename = CACHE_PATH + '\\' + sqId + '.wav';
+//     comp.RenderRangeStart = clip.offset;
+//     comp.RenderRangeEnd = clip.offset + clip.trimEnd;
+//     comp.GlobalRange = comp.RenderRange;
+//     comp.CurrentTime = comp.RenderRangeStart;
+//     comp.AudioFilename = CACHE_PATH + '\\' + sqId + '.wav';
 
-    const saver = new FTool(`Saver {
-      NameSet = true,
-      Inputs = {
-        Clip = Input {
-          Value = Clip {
-            Filename = "",
-            FormatID = "QuickTimeMovies",
-            Length = 0,
-            Saving = true,
-            TrimIn = 0,
-            ExtendFirst = 0,
-            ExtendLast = 0,
-            Loop = 1,
-            AspectMode = 0,
-            Depth = 0,
-            GlobalStart = -2000000000,
-            GlobalEnd = 0
-          },
-        },
-        Input = Input {
-          SourceOp = "Background1",
-          Source = "Output",
-        },
-        OutputFormat = Input { Value = FuID { "QuickTimeMovies" }, },
-        ["QuickTimeMovies.Compression"] = Input { Value = FuID { "H.264_avc1" }, },
-        ["QuickTimeMovies.Advanced"] = Input { Value = 1, },
-      },
-      ViewInfo = OperatorInfo { Pos = { 750, 50 } },
-    }`);
-    saver.Inputs.get('Clip')
-      .get('Value')
-      .set('Filename', path.join(CACHE_PATH, `${id}.mp4`));
+//     const saver = new FTool(`Saver {
+//       NameSet = true,
+//       Inputs = {
+//         Clip = Input {
+//           Value = Clip {
+//             Filename = "",
+//             FormatID = "QuickTimeMovies",
+//             Length = 0,
+//             Saving = true,
+//             TrimIn = 0,
+//             ExtendFirst = 0,
+//             ExtendLast = 0,
+//             Loop = 1,
+//             AspectMode = 0,
+//             Depth = 0,
+//             GlobalStart = -2000000000,
+//             GlobalEnd = 0
+//           },
+//         },
+//         Input = Input {
+//           SourceOp = "Background1",
+//           Source = "Output",
+//         },
+//         OutputFormat = Input { Value = FuID { "QuickTimeMovies" }, },
+//         ["QuickTimeMovies.Compression"] = Input { Value = FuID { "H.264_avc1" }, },
+//         ["QuickTimeMovies.Advanced"] = Input { Value = 1, },
+//       },
+//       ViewInfo = OperatorInfo { Pos = { 750, 50 } },
+//     }`);
+//     saver.Inputs.get('Clip')
+//       .get('Value')
+//       .set('Filename', path.join(CACHE_PATH, `${id}.mp4`));
 
-    const background = new FTool(`Background {
-      Inputs = {
-        Width = Input { Value = 1920, },
-        Height = Input { Value = 1080, },
-        TopLeftRed = Input { Value = 0.62, },
-        TopLeftGreen = Input { Value = 0.4, },
-        TopLeftBlue = Input { Value = 0.2, },
-      },
-      ViewInfo = OperatorInfo { Pos = { 100, 50 } },
-    }`);
+//     const background = new FTool(`Background {
+//       Inputs = {
+//         Width = Input { Value = 1920, },
+//         Height = Input { Value = 1080, },
+//         TopLeftRed = Input { Value = 0.62, },
+//         TopLeftGreen = Input { Value = 0.4, },
+//         TopLeftBlue = Input { Value = 0.2, },
+//       },
+//       ViewInfo = OperatorInfo { Pos = { 100, 50 } },
+//     }`);
 
-    comp.Tools.set('Background0', background);
-    comp.Tools.set('CTK_Output', saver);
+//     comp.Tools.set('Background0', background);
+//     comp.Tools.set('CTK_Output', saver);
 
-    const compPath = path.resolve(path.dirname(sq.id), clip.source);
-    await writeFile(compPath, comp.toString());
-  }
-}
+//     const compPath = path.resolve(path.dirname(sq.id), clip.source);
+//     await writeFile(compPath, comp.toString());
+//   }
+// }
 
 // export async function sequence_deleteClip(event: ActionEvent, clipId: string) {
 //   const resources = state.resources;
@@ -218,3 +210,16 @@ export async function sequence_addClip(
 
 //   sq.lastAudioRenderTime = Date.now();
 // }
+
+export async function sequence_setClipProperty<T extends keyof SequenceClip>(
+  ev: ActionEvent,
+  clipId: string,
+  prop: T,
+  value: SequenceClip[T]
+) {
+  const clip = await ev.fetchResource('sequence-clip', clipId);
+  updateResource('sequence-clip', clipId, (c) => {
+    c[prop] = value;
+    return c;
+  });
+}

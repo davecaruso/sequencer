@@ -1,34 +1,44 @@
 import { readFile, writeFile } from 'fs-extra';
 import { ChildResource, createResourceType, Resource } from '../resource';
+import { getProjectFileFromFile } from './project';
 
 export interface Sequence extends Resource {
   type: 'sequence';
+  project: string;
   version: number;
   description: string;
   clips: string[];
-  lastAudioRenderTime: number;
+  width: number;
+  height: number;
+  fps: number;
 }
 
 export interface SequenceFileFormat {
   version: number;
   description: string;
   clips: SequenceClip[];
-  lastAudioRenderTime: number;
+  width: number;
+  height: number;
+  fps: number;
 }
 
-export interface SequenceClip extends ChildResource<Sequence> {
+export interface SequenceClipBase extends ChildResource<Sequence> {
   type: 'sequence-clip';
-  isMedia: boolean;
+  clipType: string;
   source: string;
   description: string;
-  // TODO: multitrack support. this interface just shows a single track for now.
+  isDisabled: boolean;
   track: number;
   offset: number;
+  duration: number;
+}
+
+export type SequenceClip = MediaClip;
+
+export interface MediaClip extends SequenceClipBase {
+  clipType: 'media';
+  source: string;
   trimStart: number;
-  trimEnd: number;
-  isDisabled: boolean;
-  trackType: 'audio' | 'video' | 'data';
-  lastExternalRenderTime: number;
 }
 
 export type SequenceClipPartial = Omit<SequenceClip, 'parent' | 'id'>;
@@ -48,12 +58,16 @@ export const sequence = createResourceType<Sequence>({
     json.clips.forEach((clip) => {
       ev.loadChild(clip);
     });
+    const project = await getProjectFileFromFile(filepath);
     return {
       type: 'sequence',
       version: json.version,
       description: json.description,
       clips: json.clips.map((c) => c.id),
-      lastAudioRenderTime: json.lastAudioRenderTime,
+      project,
+      width: json.width,
+      height: json.height,
+      fps: json.fps,
     };
   },
   async save(filepath, sq, ev) {
@@ -61,17 +75,10 @@ export const sequence = createResourceType<Sequence>({
       version: sq.version,
       description: sq.description,
       clips: sq.clips.map((c) => ev.getChild(c)),
-      lastAudioRenderTime: sq.lastAudioRenderTime,
+      width: sq.width,
+      height: sq.height,
+      fps: sq.fps,
     };
     await writeFile(filepath, JSON.stringify(json, null, 2));
-  },
-  async default() {
-    return {
-      type: 'sequence',
-      version: 1,
-      description: '',
-      clips: [],
-      lastAudioRenderTime: 0,
-    };
   },
 });

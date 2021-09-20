@@ -1,5 +1,10 @@
 # creative toolkit changelog
 
+## 0.36.0
+- Removed audio support from sequences
+- Added Project resource type.
+- Started work on the real sequence editor
+
 ## 0.35.0
 - Rewrote resources to be more generic and modular
 - Frontend now subscribes to just the resources it needs
@@ -7,7 +12,6 @@
 - Fixes a bug with hardcoding the path to the preload script
 - Preload script is written in TypeScript
 - Fix actions with arguments being setup properly
-- FIXME: Cannot edit sequences right now
 
 ## 0.34.2
 - Added some SCSS

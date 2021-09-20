@@ -56,6 +56,10 @@ export function useResource<T extends ResourceType>(
   return [resources.get(key) as ResourceTypes[T], useUIState(type, id)];
 }
 
+export function useProject(resource: { project: string }) {
+  return useResource('project', resource.project)[0];
+}
+
 const fakeProxyObj = {
   NOTICE:
     'The backend API is built using a JS Proxy, so you cannot see the properties. See autocomplete for a list of available methods.',

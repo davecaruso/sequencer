@@ -10,6 +10,7 @@ import {
   unsubscribeResource,
   updateResource,
 } from '../resource';
+import path from 'path';
 
 export interface WindowResource extends Resource {
   type: 'window';
@@ -17,6 +18,7 @@ export interface WindowResource extends Resource {
   maximized: boolean;
   pinned: boolean;
   resources: string[];
+  project: string;
   __window?: BrowserWindow;
 }
 
@@ -72,6 +74,9 @@ export function createWindow() {
     webPreferences: {
       preload: `${__dirname}/preload.js`,
       nativeWindowOpen: true,
+      // It is an extremely horrible idea to disable web security, but this is the simplest way to
+      // load local files and use the vite web server.
+      webSecurity: __DEV__ ? false : true,
     },
     frame: false,
   });
@@ -106,6 +111,8 @@ export function createWindow() {
     maximized: false,
     pinned: false,
     resources: [`window://${id}`],
+    // TODO: DO NOT HARDCODE THIS
+    project: path.join(process.cwd(), 'sample'),
     __window: window,
   });
 

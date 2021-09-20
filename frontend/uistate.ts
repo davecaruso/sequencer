@@ -18,6 +18,7 @@ export interface UiStateTypes {
   sequence: SequenceUIState;
   'sequence-clip': SequenceClipUIState;
   'file-tree-item': FileTreeItemUIState;
+  project: ProjectUIState;
 }
 
 export interface WindowUIState extends UiStateBase {
@@ -32,6 +33,10 @@ export interface SequenceClipUIState extends UiStateBase {
   type: 'sequence-clip';
 }
 
+export interface ProjectUIState extends UiStateBase {
+  type: 'project';
+}
+
 export interface FileTreeItemUIState extends UiStateBase {
   type: 'file-tree-item';
   expanded: boolean;
@@ -39,21 +44,25 @@ export interface FileTreeItemUIState extends UiStateBase {
 
 const initialStates: UiStateTypes = {
   window: {
-    id: 'window',
+    id: '',
     type: 'window',
   },
   sequence: {
-    id: 'sequence',
+    id: '',
     type: 'sequence',
   },
   'sequence-clip': {
-    id: 'sequence-clip',
+    id: '',
     type: 'sequence-clip',
   },
   'file-tree-item': {
-    id: 'file-tree-item',
+    id: '',
     type: 'file-tree-item',
     expanded: false,
+  },
+  project: {
+    id: '',
+    type: 'project',
   },
 };
 

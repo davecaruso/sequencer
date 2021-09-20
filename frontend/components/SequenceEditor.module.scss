@@ -1,0 +1,92 @@
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  --pixels-per-frame: 2;
+  --track-height: 50px;
+}
+
+.hSplit {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.timeline,
+.viewer,
+.inspector {
+  outline: 1px solid #ccc;
+}
+
+.timeline {
+  flex: 1;
+  display: block;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.viewer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inspector {
+  flex: 1;
+  display: block;
+  overflow-y: auto;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 100%;
+  transform: translateX(calc(1px * var(--pixels-per-frame) * var(--playhead) - 7px));
+  cursor: ew-resize;
+  display: flex;
+  justify-content: center;
+}
+
+.playheadLine {
+  height: 100%;
+  width: 2px;
+  background-color: red;
+}
+
+.clip {
+  font-size: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(1px * var(--pixels-per-frame) * var(--duration));
+  height: calc(1px * var(--track-height));
+  transform: translate(
+    calc(1px * var(--pixels-per-frame) * var(--offset)),
+    calc(1px * var(--track-height) * var(--track))
+  );
+  border: 1px solid blueviolet;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.handleLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 100%;
+  cursor: w-resize;
+}
+
+.handleRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 100%;
+  cursor: e-resize;
+}

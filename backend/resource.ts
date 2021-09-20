@@ -35,6 +35,7 @@ export type ResourceTypes = {
 export type ResourceType = keyof ResourceTypes;
 
 const resources = new Map<string, Resource>();
+const childResources = new Map<string, string[]>();
 
 export function createResourceType<Type extends Resource>(options: CreateResourceFileType<Type>) {
   return options;

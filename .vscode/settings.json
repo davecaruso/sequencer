@@ -17,6 +17,9 @@
     "**/.gitignore": true,
     "build": true
   },
+  "files.associations": {
+    "*.{ctk,sq}": "jsonc"
+  },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

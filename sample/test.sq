@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "description": "",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "clips": [
+    {
+      "id": "dsafdsafd",
+      "type": "sequence-clip",
+      "clipType": "media",
+      "source": "./cool.mp4",
+      "track": 0,
+      "offset": 0,
+      "trimStart": 0,
+      "duration": 120,
+      "isDisabled": false
+    }
+  ]
+}
