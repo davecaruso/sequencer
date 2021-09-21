@@ -3927,6 +3927,16 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+svelte-adapter@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/svelte-adapter/-/svelte-adapter-0.4.0.tgz#9a8f9698365b3e9328c1cd77aa553ead27024a3b"
+  integrity sha512-TIYZ5Zu2Ov3AaHI5BAl/8BBWPmLMSsvdlYpkhaDm4YJkmfZ5Hfn+QcMNaR1akKLG8EXPQ2i0tHMVuOV0hr9WSw==
+
+svelte@^3.42.6:
+  version "3.42.6"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.42.6.tgz#45a534d76fcdb551a2f23abf2cfee648fa248d03"
+  integrity sha512-lAcryr9Do2PeGtbodspX5I4kWj4yWYAa2WGpDCwzNkP3y8WZTxigMd4/TMO1rBZEOkMYGn4ZXrbAlSEGhK6q3w==
+
 svg-parser@^2.0.2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/svg-parser/-/svg-parser-2.0.4.tgz#fdc2e29e13951736140b76cb122c8ee6630eb6b5"
