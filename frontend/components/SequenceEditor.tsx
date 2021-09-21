@@ -106,7 +106,7 @@ export function SequenceEditor({ id }: ResourceViewerProps) {
             <div className={c.viewerInner}>
               {clipsAtCurrentTime.map((clip) => {
                 return (
-                  <ViewerClip
+                  <MediaViewer
                     key={clip.id}
                     id={clip.id}
                     playhead={playhead}
@@ -254,13 +254,23 @@ function ClipUI({ id }: ResourceViewerProps) {
   );
 }
 
-interface ViewerClipProps {
+interface ViewerBaseProps {
   id: string;
   playhead: number;
   isPlaying: boolean;
 }
 
-export function ViewerClip({ id, playhead, isPlaying }: ViewerClipProps) {
+const viewerRegistry = {
+  media: MediaViewer,
+};
+
+export function Viewer(props: ViewerBaseProps) {
+  const [clip] = useResource('sequence-clip', props.id);
+  const Comp = viewerRegistry[clip.clipType];
+  return <Comp {...props} />;
+}
+
+export function MediaViewer({ id, playhead, isPlaying }: ViewerBaseProps) {
   const [clip] = useResource('sequence-clip', id);
   const [sq] = useResource('sequence', `C:\\Code\\creative-toolkit\\sample\\test.sq`);
 
@@ -276,6 +286,12 @@ export function ViewerClip({ id, playhead, isPlaying }: ViewerClipProps) {
       }
     }
   }, [isPlaying ? true : playhead, videoRef.current]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.load();
+    }
+  }, [videoRef.current]);
 
   return (
     <video
