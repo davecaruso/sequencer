@@ -29,10 +29,7 @@ function handleUpdate(resource: Resource) {
 
 CTK.initialize(handleUpdate);
 
-export function useResource<T extends ResourceType>(
-  type: T,
-  id: string
-): [ResourceTypes[T], UiStateTypes[T]] {
+export function useResource<T extends ResourceType>(type: T, id: string): ResourceTypes[T] {
   const key = `${type}://${id}`;
   if (!resources.has(key)) {
     if (promises.has(key)) {
@@ -53,7 +50,7 @@ export function useResource<T extends ResourceType>(
     return () => void events.off(key, f);
   }, [key]);
 
-  return [resources.get(key) as ResourceTypes[T], useUIState(type, id)];
+  return resources.get(key) as ResourceTypes[T];
 }
 
 export function useAllResources<T extends ResourceType>(
@@ -97,7 +94,7 @@ export function useAllResources<T extends ResourceType>(
 }
 
 export function useProject(resource: { project: string }) {
-  return useResource('project', resource.project)[0];
+  return useResource('project', resource.project);
 }
 
 const fakeProxyObj = {

@@ -1,3 +1,4 @@
+import { PluginOption } from 'vite';
 import { CTKGlobal } from './backend/preload';
 
 declare global {
@@ -14,4 +15,8 @@ declare module 'csstype' {
     '--duration'?: number;
     '--track'?: number;
   }
+}
+
+declare module 'vite-react-jsx' {
+  export default function reactJsx(): PluginOption;
 }

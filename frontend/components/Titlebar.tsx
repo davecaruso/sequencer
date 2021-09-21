@@ -1,6 +1,5 @@
 // Creative Toolkit - by dave caruso
 // Custom Electron Titlebar
-import React from 'react';
 import { Actions, useResource, winId } from '../frontend-state';
 import c from './Titlebar.module.scss';
 import pkg from '../../package.json';
@@ -15,7 +14,7 @@ import UnpinSVG from '../../assets/fluent-icons/unpin.svg?component';
 import { useBind } from '../useBind';
 
 export function Titlebar() {
-  const [win] = useResource('window', winId);
+  const win = useResource('window', winId);
 
   const close = useBind(Actions.window.close, winId);
   const minimize = useBind(Actions.window.minimize, winId);

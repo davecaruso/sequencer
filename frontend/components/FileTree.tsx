@@ -1,5 +1,4 @@
 import path from 'path';
-import React from 'react';
 import { useResource } from '../frontend-state';
 import { updateUIState, useUIState } from '../uistate';
 
@@ -8,7 +7,8 @@ export interface FileTreeProps {
 }
 
 export function FileTree({ item }: FileTreeProps) {
-  const [resource, uistate] = useResource('file-tree-item', item);
+  const resource = useResource('file-tree-item', item);
+  const uistate = useUIState('file-tree-item', item);
 
   function $click() {
     if (resource.fileType === 'directory') {
